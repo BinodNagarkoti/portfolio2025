@@ -45,8 +45,8 @@ export const projectsData: Project[] = [
     technologies: ['ReactJS', 'REST API', 'JavaScript'],
     imageUrl: 'https://placehold.co/600x400.png',
     imageHint: 'finance trading',
-    liveLink: '#', 
-    githubLink: '#', 
+    liveLink: '#',
+    githubLink: '#',
     tags: ['FinTech', 'Trading Platform', 'Frontend']
   },
   {
@@ -67,7 +67,7 @@ export const projectsData: Project[] = [
     technologies: ['NextJS', 'ReactJS', 'NodeJS', 'ExpressJS', 'MySQL', 'JavaScript', 'E-commerce'],
     imageUrl: 'https://placehold.co/600x400.png',
     imageHint: 'engineering portfolio',
-    liveLink: '#', 
+    liveLink: '#',
     tags: ['Portfolio', 'E-commerce', 'Full Stack', 'Civil Engineering Software']
   },
   {
@@ -75,7 +75,7 @@ export const projectsData: Project[] = [
     title: 'thedreamshouse.com',
     description: 'Real estate platform (currently under development).',
     longDescription: 'Currently spearheading the development of thedreamshouse.com, a real estate platform. This ongoing project aims to provide a modern and user-friendly experience for property searching and listing. (Details will be updated as development progresses).',
-    technologies: ['NextJS', 'ReactJS', 'NodeJS', 'ExpressJS', 'PostgreSQL'], 
+    technologies: ['NextJS', 'ReactJS', 'NodeJS', 'ExpressJS', 'PostgreSQL'],
     imageUrl: 'https://placehold.co/600x400.png',
     imageHint: 'real estate housing',
     tags: ['Real Estate', 'Full Stack', 'In Development']
@@ -89,20 +89,15 @@ export interface SkillCategory {
 
 export interface Skill {
   name: string;
-  icon: LucideIcon | (() => JSX.Element); 
-  level?: string; 
+  icon: LucideIcon | (() => JSX.Element);
+  level?: string;
 }
 
 // Custom SVG Icon Components (Simplified example)
-const ReactLogo = () => { 
-  return <CpuIcon className="text-sky-500" />; 
-};
-const NextLogo = () => {
-  return <ZapIcon className="text-neutral-900 dark:text-neutral-100" />;
-};
-const TailwindLogo = () => {
-  return <WindIcon className="text-teal-500" />;
-};
+const ReactLogo = () => React.createElement(CpuIcon, { className: "text-sky-500" });
+const NextLogo = () => React.createElement(ZapIcon, { className: "text-neutral-900 dark:text-neutral-100" });
+const TailwindLogo = () => React.createElement(WindIcon, { className: "text-teal-500" });
+
 
 export const skillsData: SkillCategory[] = [
   {
@@ -122,7 +117,7 @@ export const skillsData: SkillCategory[] = [
     name: 'Backend Development',
     skills: [
       { name: 'Node.js', icon: ServerCogIcon, level: 'Expert' },
-      { name: 'Express.js', icon: RouteIcon, level: 'Expert' }, 
+      { name: 'Express.js', icon: RouteIcon, level: 'Expert' },
       { name: 'ASP.NET 8 MVC', icon: ServerCogIcon, level: 'Intermediate' },
     ],
   },
@@ -134,7 +129,7 @@ export const skillsData: SkillCategory[] = [
       { name: 'MySQL', icon: DatabaseIcon, level: 'Expert' },
       { name: 'Microsoft SQL', icon: DatabaseIcon, level: 'Intermediate' },
       { name: 'Supabase', icon: ShieldCheckIcon, level: 'Intermediate' },
-      { name: 'Firebase', icon: ZapIcon, level: 'Intermediate' }, 
+      { name: 'Firebase', icon: ZapIcon, level: 'Intermediate' },
       { name: 'Redis', icon: DatabaseIcon, level: 'Basic' },
     ],
   },
@@ -205,7 +200,7 @@ export const personalInfo = {
   email: 'binod1365@gmail.com',
   phone: '+9779803135946',
   location: 'Kathmandu, Nepal',
-  github: 'https://github.com/yourusername', 
-  linkedin: 'https://linkedin.com/in/yourusername', 
-  cvLink: '/path-to-your-cv.pdf' 
+  github: 'https://github.com/yourusername',
+  linkedin: 'https://linkedin.com/in/yourusername',
+  cvLink: '/path-to-your-cv.pdf'
 };
