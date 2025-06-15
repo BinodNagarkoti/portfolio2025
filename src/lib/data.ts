@@ -94,9 +94,15 @@ export interface Skill {
 }
 
 // Custom SVG Icon Components (Simplified example)
-const ReactLogo = () => React.createElement(CpuIcon, { className: "text-sky-500" });
-const NextLogo = () => React.createElement(ZapIcon, { className: "text-neutral-900 dark:text-neutral-100" });
-const TailwindLogo = () => React.createElement(WindIcon, { className: "text-teal-500" });
+const ReactLogo = () => { 
+  return React.createElement(CpuIcon, { className: "text-sky-500" }); 
+};
+const NextLogo = () => { 
+  return React.createElement(ZapIcon, { className: "text-neutral-900 dark:text-neutral-100" }); 
+};
+const TailwindLogo = () => { 
+  return React.createElement(WindIcon, { className: "text-teal-500" });
+};
 
 
 export const skillsData: SkillCategory[] = [
@@ -151,46 +157,6 @@ export const skillsData: SkillCategory[] = [
       { name: 'C-Panel', icon: Settings2Icon, level: 'Intermediate' },
       { name: 'Google OAuth', icon: ShieldCheckIcon, level: 'Intermediate' },
     ],
-  },
-];
-
-export interface Testimonial {
-  id: string;
-  name: string;
-  role: string;
-  company?: string;
-  testimonial: string;
-  avatarUrl?: string;
-  avatarHint?: string;
-}
-
-export const testimonialsData: Testimonial[] = [
-  {
-    id: '1',
-    name: 'Jane Doe',
-    role: 'Project Manager',
-    company: 'Investfly',
-    testimonial: 'Binod is an exceptional developer with a keen eye for detail and a strong problem-solving ability. He consistently delivered high-quality work on our projects and was a valuable asset to the team.',
-    avatarUrl: 'https://placehold.co/100x100.png',
-    avatarHint: 'woman portrait',
-  },
-  {
-    id: '2',
-    name: 'John Smith',
-    role: 'Lead Engineer',
-    company: 'Omistics Technology',
-    testimonial: 'Working with Binod has been a pleasure. His technical skills in the MERN stack and Next.js are top-notch, and he is always eager to learn and tackle new challenges. Highly recommended!',
-    avatarUrl: 'https://placehold.co/100x100.png',
-    avatarHint: 'man portrait',
-  },
-  {
-    id: '3',
-    name: 'Alice Brown',
-    role: 'Civil Engineer Client',
-    company: 'nbimf.com User',
-    testimonial: 'The platform Binod developed for nbimf.com is incredibly user-friendly and has been a fantastic resource. His dedication to creating a great user experience is evident.',
-    avatarUrl: 'https://placehold.co/100x100.png',
-    avatarHint: 'person smiling',
   },
 ];
 
