@@ -46,8 +46,8 @@ export const projectsData: Project[] = [
     description: 'Algorithmic trading platform for stocks, options, and futures with a stock market game.',
     longDescription: 'Designed and developed a comprehensive web application for Investfly, an algorithmic trading platform. The platform supports trading in stocks, options, and futures, and includes an engaging stock market game. Key responsibilities included frontend development using ReactJS and seamless integration with REST APIs.',
     technologies: ['ReactJS', 'REST API', 'JavaScript'],
-    imageUrl: 'https://placehold.co/600x400.png',
-    imageHint: 'finance trading',
+    imageUrl: 'https://www.investfly.com/images/logos/logo-white.png',
+    imageHint: 'company logo',
     liveLink: '#',
     githubLink: '#',
     tags: ['FinTech', 'Trading Platform', 'Frontend']
@@ -58,8 +58,8 @@ export const projectsData: Project[] = [
     description: 'Platform for civil engineering students: blogs, BIM resources.',
     longDescription: 'Developed nbimf.com, a platform tailored for civil engineering students. It features blogs related to civil engineering and Building Information Modeling (BIM). The project involved building a customer-facing site with NextJS, an admin panel with ReactJS, and a backend using ExpressJS with MongoDB.',
     technologies: ['NextJS', 'ReactJS', 'NodeJS', 'ExpressJS', 'MongoDB', 'JavaScript'],
-    imageUrl: 'https://placehold.co/600x400.png',
-    imageHint: 'engineering education',
+    imageUrl: 'https://nbimf.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FNBIMF-logo.bbba72d3.png&w=128&q=75',
+    imageHint: 'company logo',
     tags: ['Civil Engineering', 'BIM', 'Full Stack', 'Content Platform']
   },
   {
@@ -68,8 +68,8 @@ export const projectsData: Project[] = [
     description: 'Portfolio with blogs, project showcases, e-commerce for civil software, and training booking.',
     longDescription: 'Led the design and development of forefronteng.com, a multi-functional portfolio site. Features include blogs, project showcases, an e-commerce section for civil engineering software sales, and a training booking application. The tech stack comprised NextJS for the frontend, ReactJS for the admin panel, and an ExpressJS backend with MySQL.',
     technologies: ['NextJS', 'ReactJS', 'NodeJS', 'ExpressJS', 'MySQL', 'JavaScript', 'E-commerce'],
-    imageUrl: 'https://placehold.co/600x400.png',
-    imageHint: 'engineering portfolio',
+    imageUrl: 'https://forefronteng.com/_next/image?url=%2Fimg%2Flogo.png&w=256&q=75',
+    imageHint: 'company logo',
     liveLink: '#',
     tags: ['Portfolio', 'E-commerce', 'Full Stack', 'Civil Engineering Software']
   },
@@ -79,8 +79,8 @@ export const projectsData: Project[] = [
     description: 'Real estate platform (currently under development).',
     longDescription: 'Currently spearheading the development of thedreamshouse.com, a real estate platform. This ongoing project aims to provide a modern and user-friendly experience for property searching and listing. (Details will be updated as development progresses).',
     technologies: ['NextJS', 'ReactJS', 'NodeJS', 'ExpressJS', 'PostgreSQL'],
-    imageUrl: 'https://placehold.co/600x400.png',
-    imageHint: 'real estate housing',
+    imageUrl: 'https://thedreamshouse.com/_next/image?url=%2Fthedreamshousepng-no-bg.png&w=1920&q=75',
+    imageHint: 'company logo',
     tags: ['Real Estate', 'Full Stack', 'In Development']
   },
 ];
@@ -93,8 +93,8 @@ export const personalProjectsData: Project[] = [
     technologies: ['NextJS', 'Supabase', 'TailwindCSS', 'Genkit AI'],
     imageUrl: 'https://placehold.co/600x400.png',
     imageHint: 'movie cinema',
-    liveLink: '#', // To be updated
-    githubLink: '#', // To be updated
+    liveLink: '#',
+    githubLink: '#',
     tags: ['AI', 'Entertainment', 'Next.js', 'Supabase']
   },
   {
@@ -104,8 +104,8 @@ export const personalProjectsData: Project[] = [
     technologies: ['NextJS', 'Supabase', 'TailwindCSS', 'Genkit AI'],
     imageUrl: 'https://placehold.co/600x400.png',
     imageHint: 'chat bubble',
-    liveLink: '#', // To be updated
-    githubLink: '#', // To be updated
+    liveLink: '#',
+    githubLink: '#',
     tags: ['AI', 'Chatbot', 'Next.js', 'NLP']
   },
   {
@@ -115,8 +115,8 @@ export const personalProjectsData: Project[] = [
     technologies: ['NextJS', 'Supabase', 'TailwindCSS', 'Genkit AI'],
     imageUrl: 'https://placehold.co/600x400.png',
     imageHint: 'tools wrench',
-    liveLink: '#', // To be updated
-    githubLink: '#', // To be updated
+    liveLink: '#',
+    githubLink: '#',
     tags: ['AI', 'Utility Tools', 'Next.js', 'Productivity']
   }
 ];
@@ -208,5 +208,5 @@ export const personalInfo = {
   location: 'Kathmandu, Nepal',
   github: 'https://github.com/yourusername',
   linkedin: 'https://linkedin.com/in/yourusername',
-  cvLink: '/path-to-your-cv.pdf'
+  cvLink: '/path-to-your-cv.pdf' // Ensure this path is correct or remove if not used
 };
