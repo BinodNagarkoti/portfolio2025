@@ -1,6 +1,8 @@
+
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image'; // Using next/image for optimization
 
 interface AnimatedShapeProps {
   projectLogos: string[];
@@ -8,10 +10,10 @@ interface AnimatedShapeProps {
 
 const AnimatedShape: React.FC<AnimatedShapeProps> = ({ projectLogos }) => {
   const honeycombRef = useRef<HTMLDivElement>(null);
-  const [rotation, setRotation] = useState({ x: -20, y: 30 }); // Initial rotation
+  const [rotation, setRotation] = useState({ x: -15, y: 25 }); // Initial rotation
   const [isDragging, setIsDragging] = useState(false);
   const [prevMousePos, setPrevMousePos] = useState({ x: 0, y: 0 });
-  const rotationSpeed = 0.5; // Degrees per pixel moved
+  const rotationSpeed = 0.3; // Degrees per pixel moved
 
   useEffect(() => {
     if (honeycombRef.current) {
@@ -53,14 +55,13 @@ const AnimatedShape: React.FC<AnimatedShapeProps> = ({ projectLogos }) => {
     setPrevMousePos({ x: event.clientX, y: event.clientY });
   };
 
-  // Optional: Add a slow continuous rotation if not dragging
   useEffect(() => {
     let animationFrameId: number;
     const animate = () => {
       if (!isDragging) {
         setRotation((prev) => ({
-          x: prev.x - 0.02,
-          y: prev.y + 0.05,
+          x: prev.x - 0.01, // Slower continuous rotation
+          y: prev.y + 0.03, // Slower continuous rotation
         }));
       }
       animationFrameId = requestAnimationFrame(animate);
@@ -69,78 +70,97 @@ const AnimatedShape: React.FC<AnimatedShapeProps> = ({ projectLogos }) => {
     return () => cancelAnimationFrame(animationFrameId);
   }, [isDragging]);
 
-  // Honeycomb dimensions and geometry calculations
-  const size = 50; // Size of each hexagon (radius of the circumscribed circle)
-  const height = 100; // Height of the hexagonal prism
-  const angle = 60; // Angle for hexagonal faces (internal angle of a regular hexagon)
-
-  // Calculate the width of the hexagon (distance between opposite vertices)
-  const hexWidth = Math.sqrt(3) * size;
-
-  // Generate a honeycomb pattern with multiple hexagons
-  const generateHoneycomb = () => {
+  const generateHoneycombCluster = () => {
     const hexagons: JSX.Element[] = [];
-    const rows = 3; // Number of rows in the honeycomb
-    const cols = 5; // Number of columns in the honeycomb
+    const numLogos = projectLogos.length;
+    if (numLogos === 0) return hexagons;
 
-    for (let row = 0; row < rows; row++) {
-      for (let col = 0; col < cols; col++) {
-        let x = col * hexWidth * 1.5; // Horizontal offset
-        const y = row * (size * 1.5); // Vertical offset
-        const z = 0; // Depth offset
+    const sideLength = 60; // Side length of the hexagon
+    const hexDivWidth = Math.sqrt(3) * sideLength; // Flat-to-flat width
+    const hexDivHeight = 2 * sideLength; // Point-to-point height
 
-        // Apply alternating offset for even rows to create the honeycomb pattern
-        if (row % 2 === 1) {
-          x += hexWidth * 0.75; // Offset by half the width
-        }
-
-        hexagons.push(
-          <div
-            key={`${row}-${col}`}
-            className="honeycomb-face absolute bg-gray-300 opacity-80 flex justify-center items-center"
-            style={{
-              transform: `translate3d(${x}px, ${y}px, ${z}px) rotateX(90deg)`,
-              width: `${hexWidth}px`,
-              height: `${size * 1.15}px`, // Adjust height proportionally
-              clipPath: `polygon(
-                50% 0%, 
-                100% 25%, 
-                100% 75%, 
-                50% 100%, 
-                0% 75%, 
-                0% 25%
-              )`, // Proper hexagonal shape
-            }}
-          >
-            {projectLogos[row * cols + col] && (
-              <img
-                src={projectLogos[row * cols + col]}
-                alt={`project logo ${row * cols + col + 1}`}
-                className="w-full h-full object-contain p-2"
-              />
-            )}
-          </div>
-        );
-      }
+    // Center hexagon
+    if (numLogos > 0) {
+      const zOffset = (Math.random() - 0.5) * sideLength * 0.3;
+      const randomRotateZ = (Math.random() - 0.5) * 5; // Small random tilt
+      hexagons.push(
+        <div
+          key="center-hex"
+          className="hexagon-face absolute flex justify-center items-center bg-card/70 border border-border shadow-md"
+          style={{
+            width: `${hexDivWidth}px`,
+            height: `${hexDivHeight}px`,
+            transform: `translate3d(0px, 0px, ${zOffset}px) rotateX(90deg) rotateZ(${randomRotateZ}deg)`,
+            clipPath: `polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)`,
+          }}
+        >
+          <Image
+            src={projectLogos[0]}
+            alt="project logo center"
+            width={Math.floor(hexDivWidth * 0.7)}
+            height={Math.floor(hexDivHeight * 0.7)}
+            className="object-contain p-2"
+            unoptimized // If logos are external and not configured in next.config.js, or to prevent issues
+          />
+        </div>
+      );
     }
 
+    // Surrounding hexagons
+    const numSurrounding = Math.min(numLogos - 1, 6); // Max 6 surrounding for a single ring
+    const ringRadius = hexDivHeight * 0.866; // Distance from center to center of surrounding hexes (sqrt(3)*s where s is side length)
+
+    for (let i = 0; i < numSurrounding; i++) {
+      const angle = (i / numSurrounding) * 2 * Math.PI + (Math.PI / 6); // Offset angle for pointy top alignment
+      const x = ringRadius * Math.cos(angle);
+      const y = ringRadius * Math.sin(angle);
+      const z = (Math.random() - 0.5) * sideLength * 0.5; // Random Z for cluster effect
+      const randomRotateZ = (Math.random() - 0.5) * 10; // Small random tilt
+
+      hexagons.push(
+        <div
+          key={`surrounding-hex-${i}`}
+          className="hexagon-face absolute flex justify-center items-center bg-card/70 border border-border shadow-md"
+          style={{
+            width: `${hexDivWidth}px`,
+            height: `${hexDivHeight}px`,
+            transform: `translate3d(${x}px, ${y}px, ${z}px) rotateX(90deg) rotateZ(${randomRotateZ}deg)`,
+            clipPath: `polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)`,
+          }}
+        >
+          {projectLogos[i + 1] && (
+            <Image
+              src={projectLogos[i + 1]}
+              alt={`project logo ${i + 1}`}
+              width={Math.floor(hexDivWidth * 0.7)}
+              height={Math.floor(hexDivHeight * 0.7)}
+              className="object-contain p-2"
+              unoptimized
+            />
+          )}
+        </div>
+      );
+    }
     return hexagons;
   };
 
   return (
     <div
-      className="honeycomb-container w-[600px] h-[400px] flex justify-center items-center perspective-1000"
+      className="w-full h-[300px] md:h-[400px] flex justify-center items-center cursor-grab active:cursor-grabbing"
+      style={{ perspective: '1200px' }}
       onMouseDown={handleMouseDown}
     >
       <div
-        className="honeycomb transform-style-preserve-3d"
+        className="transform-style-preserve-3d relative"
         ref={honeycombRef}
         style={{ transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)` }}
       >
-        {generateHoneycomb()}
+        {generateHoneycombCluster()}
       </div>
     </div>
   );
 };
 
 export default AnimatedShape;
+
+    
