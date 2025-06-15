@@ -1,8 +1,20 @@
+
+'use client'; // HeroSection now needs to be a Client Component to use next/dynamic
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import AnimatedShape from '@/components/common/AnimatedShape';
 import { ArrowDownIcon, DownloadIcon } from 'lucide-react';
 import { personalInfo } from '@/lib/data';
+import dynamic from 'next/dynamic';
+
+// Dynamically import AnimatedShape with ssr: false
+const AnimatedShape = dynamic(
+  () => import('@/components/common/AnimatedShape'),
+  { 
+    ssr: false,
+    loading: () => <div className="w-full h-[300px] md:h-[400px] flex justify-center items-center">Initializing 3D model...</div>
+  }
+);
 
 const HeroSection = () => {
   return (
@@ -35,14 +47,12 @@ const HeroSection = () => {
             </div>
           </div>
           <div className="hidden md:flex items-center justify-center animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-            {/* The AnimatedShape component no longer needs projectLogos */}
             <AnimatedShape />
           </div>
         </div>
       </div>
-      {/* Subtle background pattern or shapes */}
       <div className="absolute inset-0 opacity-5 overflow-hidden z-0">
-        {/* Example: SVG pattern or positioned shapes */}
+        {/* SVG pattern or positioned shapes can go here if desired */}
       </div>
     </section>
   );
