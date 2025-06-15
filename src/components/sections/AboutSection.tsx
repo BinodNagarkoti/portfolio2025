@@ -11,12 +11,13 @@ const AboutSection = () => {
         <div className="md:col-span-2 flex justify-center md:justify-start">
           <Card className="overflow-hidden shadow-xl w-full max-w-sm transform transition-all hover:scale-105 hover:shadow-2xl">
             <Image
-              src="https://placehold.co/400x500.png"
+              src="/me.png"
               alt={personalInfo.name}
               width={400}
               height={500}
               className="object-cover w-full h-full"
-              data-ai-hint="professional developer"
+              data-ai-hint="profile picture"
+              priority // Adding priority for LCP improvement
             />
           </Card>
         </div>
