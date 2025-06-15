@@ -1,10 +1,11 @@
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import type { Project } from '@/lib/data';
-import { ExternalLinkIcon, GithubIcon, EyeIcon } from 'lucide-react';
+import { EyeIcon } from 'lucide-react';
 
 interface ProjectCardProps {
   project: Project;
@@ -39,7 +40,7 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
               <Badge 
                 key={tech} 
                 variant="secondary" 
-                className="bg-primary/10 text-primary-foreground group-hover:bg-accent/20 group-hover:text-accent-foreground transition-colors"
+                className="bg-primary/10 text-primary group-hover:bg-accent/20 group-hover:text-accent-foreground transition-colors"
               >
                 {tech}
               </Badge>
@@ -55,7 +56,7 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
           <h4 className="text-xs font-semibold uppercase text-muted-foreground mb-2">Category:</h4>
           <div className="flex flex-wrap gap-2">
             {project.tags.map((tag) => (
-              <Badge key={tag} variant="outline" className="border-primary/50 text-primary/80">
+              <Badge key={tag} variant="secondary">
                 {tag}
               </Badge>
             ))}
@@ -63,27 +64,16 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
         </div>
       </CardContent>
       <CardFooter className="p-6 bg-muted/20 border-t border-border">
-        <div className="flex w-full justify-between items-center gap-2">
+        <div className="flex w-full justify-center items-center">
           {project.liveLink && project.liveLink !== '#' ? (
-            <Button variant="default" asChild className="bg-primary hover:bg-accent hover:text-accent-foreground text-primary-foreground flex-1 transition-colors">
+            <Button variant="default" asChild className="bg-primary hover:bg-accent hover:text-accent-foreground text-primary-foreground flex-grow transition-colors">
               <Link href={project.liveLink} target="_blank" rel="noopener noreferrer">
                 <EyeIcon className="mr-2 h-4 w-4" /> Live Demo
               </Link>
             </Button>
           ) : (
-             <Button variant="outline" disabled className="flex-1">
+             <Button variant="outline" disabled className="flex-grow">
                 <EyeIcon className="mr-2 h-4 w-4" /> Live Demo
-              </Button>
-          )}
-          {project.githubLink && project.githubLink !== '#' ? (
-            <Button variant="outline" asChild className="border-foreground/50 text-foreground hover:bg-foreground/10 hover:text-foreground flex-1 transition-colors">
-              <Link href={project.githubLink} target="_blank" rel="noopener noreferrer">
-                <GithubIcon className="mr-2 h-4 w-4" /> View Code
-              </Link>
-            </Button>
-          ) : (
-             <Button variant="outline" disabled className="flex-1">
-                <GithubIcon className="mr-2 h-4 w-4" /> View Code
               </Button>
           )}
         </div>

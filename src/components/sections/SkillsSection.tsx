@@ -8,7 +8,7 @@ const SkillsSection = () => {
   return (
     <SectionWrapper id="skills" title="My Expertise" subtitle="Technical Skills">
       <Tabs defaultValue={skillsData[0]?.name || 'frontend'} className="w-full">
-        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 mb-8 bg-muted/50 p-2 rounded-lg">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 mb-8 bg-muted/50 p-2 h-full rounded-lg">
           {skillsData.map((category) => (
             <TabsTrigger 
               key={category.name} 

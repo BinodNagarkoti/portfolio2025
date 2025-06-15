@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import AnimatedShape from '@/components/common/AnimatedShape';
 import { ArrowDownIcon, DownloadIcon } from 'lucide-react';
-import { personalInfo } from '@/lib/data';
+import { personalInfo, projectsData } from '@/lib/data';
 
 const HeroSection = () => {
   return (
@@ -26,7 +26,7 @@ const HeroSection = () => {
                 </Link>
               </Button>
               {personalInfo.cvLink && (
-                 <Button variant="outline" size="lg" asChild className="border-primary text-primary hover:bg-primary/10 shadow-lg transform transition-transform hover:scale-105">
+                 <Button variant="outline" size="lg" asChild className="border-primary text-primary hover:text-black hover:bg-primary/10 shadow-lg transform transition-transform hover:scale-105">
                   <Link href={personalInfo.cvLink} target="_blank" download>
                     Download CV <DownloadIcon className="ml-2 h-5 w-5" />
                   </Link>
@@ -35,7 +35,7 @@ const HeroSection = () => {
             </div>
           </div>
           <div className="hidden md:flex items-center justify-center animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-            <AnimatedShape />
+            <AnimatedShape projectLogos={projectsData.map(project => project.imageUrl)} />
           </div>
         </div>
       </div>
