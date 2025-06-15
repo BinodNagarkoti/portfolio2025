@@ -30,7 +30,7 @@ const Footer = () => {
           &copy; {currentYear} {personalInfo.name}. All rights reserved.
         </p>
         <p className="text-xs mt-1">
-          Designed with <span className="text-red-500">&hearts;</span> and coded with Next.js & Tailwind CSS.
+          Designed with <span className="text-primary">&hearts;</span> and coded with Next.js & Tailwind CSS.
         </p>
       </div>
     </footer>

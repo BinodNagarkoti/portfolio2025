@@ -35,8 +35,12 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
         <div className="mb-4">
           <h4 className="text-xs font-semibold uppercase text-muted-foreground mb-2">Technologies Used:</h4>
           <div className="flex flex-wrap gap-2">
-            {project.technologies.slice(0, 5).map((tech) => ( // Show max 5 techs for brevity
-              <Badge key={tech} variant="secondary" className="bg-primary/10 text-primary group-hover:bg-accent/20 group-hover:text-accent transition-colors">
+            {project.technologies.slice(0, 5).map((tech) => ( 
+              <Badge 
+                key={tech} 
+                variant="secondary" 
+                className="bg-primary/10 text-primary-foreground group-hover:bg-accent/20 group-hover:text-accent-foreground transition-colors"
+              >
                 {tech}
               </Badge>
             ))}
