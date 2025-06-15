@@ -1,5 +1,4 @@
-
-'use client'; // HeroSection now needs to be a Client Component to use next/dynamic
+'use client'; 
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -7,12 +6,12 @@ import { ArrowDownIcon, DownloadIcon } from 'lucide-react';
 import { personalInfo } from '@/lib/data';
 import dynamic from 'next/dynamic';
 
-// Dynamically import AnimatedShape with ssr: false
-const AnimatedShape = dynamic(
-  () => import('@/components/common/AnimatedShape'),
+// Dynamically import P5Sketch (formerly AnimatedShape) with ssr: false
+const P5Sketch = dynamic(
+  () => import('@/components/common/P5Sketch'), // Updated path
   { 
     ssr: false,
-    loading: () => <div className="w-full h-[300px] md:h-[400px] flex justify-center items-center">Initializing 3D model...</div>
+    loading: () => <div className="w-full h-[300px] md:h-[400px] flex justify-center items-center bg-muted/30"><p>Initializing 3D Sketch...</p></div>
   }
 );
 
@@ -47,7 +46,8 @@ const HeroSection = () => {
             </div>
           </div>
           <div className="hidden md:flex items-center justify-center animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-            <AnimatedShape />
+            {/* Use the new P5Sketch component */}
+            <P5Sketch /> 
           </div>
         </div>
       </div>
