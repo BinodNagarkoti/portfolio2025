@@ -20,7 +20,10 @@ import {
   Settings2Icon,
   BriefcaseIcon,
   UsersIcon,
-  RouteIcon
+  RouteIcon,
+  FilmIcon,
+  BotIcon,
+  CalculatorIcon
 } from 'lucide-react';
 
 export interface Project {
@@ -81,6 +84,43 @@ export const projectsData: Project[] = [
     tags: ['Real Estate', 'Full Stack', 'In Development']
   },
 ];
+
+export const personalProjectsData: Project[] = [
+  {
+    id: 'ai-movie-suggestion',
+    title: 'AI Movie Suggester',
+    description: 'Get personalized movie recommendations based on your mood and preferences, powered by AI.',
+    technologies: ['NextJS', 'Supabase', 'TailwindCSS', 'Genkit AI'],
+    imageUrl: 'https://placehold.co/600x400.png',
+    imageHint: 'movie cinema',
+    liveLink: '#', // To be updated
+    githubLink: '#', // To be updated
+    tags: ['AI', 'Entertainment', 'Next.js', 'Supabase']
+  },
+  {
+    id: 'ai-chat-bot',
+    title: 'Intelligent AI Chat',
+    description: 'A conversational AI chat application capable of understanding context and providing helpful responses.',
+    technologies: ['NextJS', 'Supabase', 'TailwindCSS', 'Genkit AI'],
+    imageUrl: 'https://placehold.co/600x400.png',
+    imageHint: 'chat bubble',
+    liveLink: '#', // To be updated
+    githubLink: '#', // To be updated
+    tags: ['AI', 'Chatbot', 'Next.js', 'NLP']
+  },
+  {
+    id: 'ai-tools-suite',
+    title: 'AI-Powered Utilities',
+    description: 'A suite of smart tools including math solvers, color pickers, measurement converters, enhanced with AI capabilities.',
+    technologies: ['NextJS', 'Supabase', 'TailwindCSS', 'Genkit AI'],
+    imageUrl: 'https://placehold.co/600x400.png',
+    imageHint: 'tools wrench',
+    liveLink: '#', // To be updated
+    githubLink: '#', // To be updated
+    tags: ['AI', 'Utility Tools', 'Next.js', 'Productivity']
+  }
+];
+
 
 export interface SkillCategory {
   name: string;
