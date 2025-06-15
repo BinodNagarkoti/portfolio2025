@@ -1,171 +1,110 @@
 
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import Image from 'next/image'; // Using next/image for optimization
+import * as React from 'react';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, Edges } from '@react-three/drei';
+import * as THREE from 'three';
 
-interface AnimatedShapeProps {
-  projectLogos: string[];
+interface HexagonInstanceProps {
+  position: [number, number, number];
+  rotation: [number, number, number];
+  shape: THREE.Shape;
+  extrudeSettings: THREE.ExtrudeGeometryOptions;
 }
 
-const AnimatedShape: React.FC<AnimatedShapeProps> = ({ projectLogos }) => {
-  const honeycombRef = useRef<HTMLDivElement>(null);
-  const [rotation, setRotation] = useState({ x: -15, y: 25 }); // Initial rotation
-  const [isDragging, setIsDragging] = useState(false);
-  const [prevMousePos, setPrevMousePos] = useState({ x: 0, y: 0 });
-  const rotationSpeed = 0.3; // Degrees per pixel moved
-  const [renderedCluster, setRenderedCluster] = useState<JSX.Element[] | null>(null);
+const HexagonInstance: React.FC<HexagonInstanceProps> = ({ position, rotation, shape, extrudeSettings }) => {
+  const extrudeGeomRef = React.useRef<THREE.ExtrudeGeometry>(null!);
 
-  useEffect(() => {
-    if (honeycombRef.current) {
-      honeycombRef.current.style.transform = `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`;
+  React.useLayoutEffect(() => {
+    if (extrudeGeomRef.current) {
+      extrudeGeomRef.current.center();
     }
-  }, [rotation]);
+  }, [shape, extrudeSettings]);
+  
+  return (
+    <group position={position} rotation={rotation}>
+      <mesh>
+        <extrudeGeometry ref={extrudeGeomRef} args={[shape, extrudeSettings]} />
+        <meshStandardMaterial visible={false} /> 
+        <Edges>
+          <lineBasicMaterial color="black" />
+        </Edges>
+      </mesh>
+    </group>
+  );
+};
 
-  useEffect(() => {
-    const handleMouseMove = (event: MouseEvent) => {
-      if (!isDragging) return;
+interface AnimatedShapeProps {
+  // projectLogos prop is no longer used
+}
 
-      const deltaX = event.clientX - prevMousePos.x;
-      const deltaY = event.clientY - prevMousePos.y;
+const AnimatedShape: React.FC<AnimatedShapeProps> = () => {
+  const [hexConfigs, setHexConfigs] = React.useState<Array<{position: [number, number, number], rotation: [number, number, number]}>>([]);
 
-      setRotation((prevRotation) => ({
-        x: prevRotation.x - deltaY * rotationSpeed,
-        y: prevRotation.y + deltaX * rotationSpeed,
-      }));
-      setPrevMousePos({ x: event.clientX, y: event.clientY });
-    };
-
-    const handleMouseUp = () => {
-      setIsDragging(false);
-    };
-
-    if (isDragging) {
-      window.addEventListener('mousemove', handleMouseMove);
-      window.addEventListener('mouseup', handleMouseUp);
+  const hexagonShape = React.useMemo(() => {
+    const shape = new THREE.Shape();
+    const R = 0.8; // Radius of hexagon
+    shape.moveTo(R * Math.cos(0), R * Math.sin(0));
+    for (let i = 1; i <= 6; i++) {
+      shape.lineTo(R * Math.cos(i * Math.PI / 3), R * Math.sin(i * Math.PI / 3));
     }
+    return shape;
+  }, []);
 
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isDragging, prevMousePos, rotationSpeed]);
+  const extrudeSettings = React.useMemo(() => ({
+    depth: 0.12,
+    bevelEnabled: false,
+  }), []);
 
-  const handleMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
-    setIsDragging(true);
-    setPrevMousePos({ x: event.clientX, y: event.clientY });
-  };
+  React.useEffect(() => {
+    const configs = [];
+    const N = 12; // Number of hexagons
+    const R_hex = 0.8; // Corresponds to hexagonShape radius
+    const SPREAD_FACTOR = 2.8; // How much they spread out
 
-  useEffect(() => {
-    let animationFrameId: number;
-    const animate = () => {
-      if (!isDragging) {
-        setRotation((prev) => ({
-          x: prev.x - 0.01, // Slower continuous rotation
-          y: prev.y + 0.03, // Slower continuous rotation
-        }));
-      }
-      animationFrameId = requestAnimationFrame(animate);
-    };
-    animationFrameId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [isDragging]);
+    for (let i = 0; i < N; i++) {
+      // Attempt a slightly more organic, less grid-like placement for a "slice"
+      const angle = (i / (N * 0.75)) * Math.PI * 2 + (Math.random() - 0.5) * 0.5; // Add some randomness to angle
+      const radius = R_hex * 0.5 + Math.random() * R_hex * SPREAD_FACTOR * 0.6; // Random distance from center, but not too far for a slice
+      
+      const x = Math.cos(angle) * radius + (Math.random() - 0.5) * R_hex * 0.3;
+      const y = Math.sin(angle) * radius + (Math.random() - 0.5) * R_hex * 0.3;
+      const z = (Math.random() - 0.5) * R_hex * 0.4; // Very thin slice overall depth
+      const rotZ = (Math.random() - 0.5) * Math.PI / 10; // Slight random tilt for "imperfect" look
+      
+      configs.push({
+        position: [x, y, z] as [number, number, number],
+        rotation: [0, 0, rotZ] as [number, number, number],
+      });
+    }
+    setHexConfigs(configs);
+  }, []);
 
-  useEffect(() => {
-    const generateHoneycombCluster = () => {
-      const hexagons: JSX.Element[] = [];
-      const numLogos = projectLogos.length;
-      if (numLogos === 0) return hexagons;
-
-      const sideLength = 60; // Side length of the hexagon
-      const hexDivWidth = Math.sqrt(3) * sideLength; // Flat-to-flat width
-      const hexDivHeight = 2 * sideLength; // Point-to-point height
-
-      // Center hexagon
-      if (numLogos > 0) {
-        const zOffset = (Math.random() - 0.5) * sideLength * 0.3;
-        const randomRotateZ = (Math.random() - 0.5) * 5; // Small random tilt
-        hexagons.push(
-          <div
-            key="center-hex"
-            className="hexagon-face absolute flex justify-center items-center bg-card/70 border border-border shadow-md"
-            style={{
-              width: `${hexDivWidth}px`,
-              height: `${hexDivHeight}px`,
-              transform: `translate3d(0px, 0px, ${zOffset}px) rotateX(90deg) rotateZ(${randomRotateZ}deg)`,
-              clipPath: `polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)`,
-            }}
-          >
-            <Image
-              src={projectLogos[0]}
-              alt="project logo center"
-              width={Math.floor(hexDivWidth * 0.7)}
-              height={Math.floor(hexDivHeight * 0.7)}
-              className="object-contain p-2"
-              unoptimized 
-            />
-          </div>
-        );
-      }
-
-      // Surrounding hexagons
-      const numSurrounding = Math.min(numLogos - 1, 6); 
-      const ringRadius = hexDivHeight * 0.866; 
-
-      for (let i = 0; i < numSurrounding; i++) {
-        const angle = (i / numSurrounding) * 2 * Math.PI + (Math.PI / 6); 
-        const x = ringRadius * Math.cos(angle);
-        const y = ringRadius * Math.sin(angle);
-        const z = (Math.random() - 0.5) * sideLength * 0.5; 
-        const randomRotateZ = (Math.random() - 0.5) * 10;
-
-        hexagons.push(
-          <div
-            key={`surrounding-hex-${i}`}
-            className="hexagon-face absolute flex justify-center items-center bg-card/70 border border-border shadow-md"
-            style={{
-              width: `${hexDivWidth}px`,
-              height: `${hexDivHeight}px`,
-              transform: `translate3d(${x}px, ${y}px, ${z}px) rotateX(90deg) rotateZ(${randomRotateZ}deg)`,
-              clipPath: `polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)`,
-            }}
-          >
-            {projectLogos[i + 1] && (
-              <Image
-                src={projectLogos[i + 1]}
-                alt={`project logo ${i + 1}`}
-                width={Math.floor(hexDivWidth * 0.7)}
-                height={Math.floor(hexDivHeight * 0.7)}
-                className="object-contain p-2"
-                unoptimized
-              />
-            )}
-          </div>
-        );
-      }
-      return hexagons;
-    };
-    setRenderedCluster(generateHoneycombCluster());
-  }, [projectLogos]);
-
+  if (hexConfigs.length === 0) {
+    return <div className="w-full h-[300px] md:h-[400px] flex justify-center items-center">Loading 3D model...</div>;
+  }
 
   return (
-    <div
-      className="w-full h-[300px] md:h-[400px] flex justify-center items-center cursor-grab active:cursor-grabbing"
-      style={{ perspective: '1200px' }}
-      onMouseDown={handleMouseDown}
-    >
-      <div
-        className="transform-style-preserve-3d relative"
-        ref={honeycombRef}
-        style={{ transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)` }}
-      >
-        {renderedCluster ? renderedCluster : <div>Loading animation...</div>}
-      </div>
+    <div className="w-full h-[300px] md:h-[400px] cursor-grab active:cursor-grabbing">
+      <Canvas camera={{ position: [0, 0.5, 5.5], fov: 60 }}>
+        <ambientLight intensity={1.2} />
+        <directionalLight position={[5, 8, 7]} intensity={1.8} castShadow />
+        <React.Suspense fallback={null}>
+          {hexConfigs.map((config, index) => (
+            <HexagonInstance
+              key={index}
+              position={config.position}
+              rotation={config.rotation}
+              shape={hexagonShape}
+              extrudeSettings={extrudeSettings}
+            />
+          ))}
+        </React.Suspense>
+        <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.6} maxPolarAngle={Math.PI / 1.8} minPolarAngle={Math.PI / 3}/>
+      </Canvas>
     </div>
   );
 };
 
 export default AnimatedShape;
-
-    

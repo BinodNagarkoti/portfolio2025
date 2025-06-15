@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import AnimatedShape from '@/components/common/AnimatedShape';
 import { ArrowDownIcon, DownloadIcon } from 'lucide-react';
-import { personalInfo, projectsData } from '@/lib/data';
+import { personalInfo } from '@/lib/data';
 
 const HeroSection = () => {
   return (
@@ -35,7 +35,8 @@ const HeroSection = () => {
             </div>
           </div>
           <div className="hidden md:flex items-center justify-center animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-            <AnimatedShape projectLogos={projectsData.map(project => project.imageUrl)} />
+            {/* The AnimatedShape component no longer needs projectLogos */}
+            <AnimatedShape />
           </div>
         </div>
       </div>

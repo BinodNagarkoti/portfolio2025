@@ -109,12 +109,13 @@
   }
 }
 
-/* Styles for 3D Cube in Hero Section */
+/* Styles for 3D Cube in Hero Section - REMOVED */
+/* 
 .cube-container {
   perspective: 1000px;
-  width: 150px; /* Increased size */
-  height: 150px; /* Increased size */
-  cursor: grab; /* Indicate draggable */
+  width: 150px; 
+  height: 150px; 
+  cursor: grab; 
 }
 
 .cube-container:active {
@@ -126,32 +127,32 @@
   height: 100%;
   position: relative;
   transform-style: preserve-3d;
-  /* animation: rotate-cube 25s infinite linear; REMOVED for JS control */
 }
 
 .cube-face {
   position: absolute;
-  width: 150px; /* Increased size */
-  height: 150px; /* Increased size */
+  width: 150px;
+  height: 150px;
   border: 2px solid hsl(var(--primary));
-  background: hsla(var(--primary), 0.3); /* More subtle background */
+  background: hsla(var(--primary), 0.3); 
   display: flex;
   align-items: center;
   justify-content: center;
   color: hsl(var(--primary-foreground));
-  font-size: 1rem; /* Adjusted font size */
+  font-size: 1rem; 
   font-weight: bold;
-  opacity: 0.85; /* Slightly more opaque */
-  box-shadow: 0 0 15px hsla(var(--accent), 0.5); /* Subtle accent glow */
-  user-select: none; /* Prevent text selection during drag */
+  opacity: 0.85; 
+  box-shadow: 0 0 15px hsla(var(--accent), 0.5); 
+  user-select: none; 
 }
 
-.cube-face-front  { transform: rotateY(  0deg) translateZ(75px); } /* Adjusted translateZ */
+.cube-face-front  { transform: rotateY(  0deg) translateZ(75px); } 
 .cube-face-right  { transform: rotateY( 90deg) translateZ(75px); }
 .cube-face-back   { transform: rotateY(180deg) translateZ(75px); }
 .cube-face-left   { transform: rotateY(-90deg) translateZ(75px); }
 .cube-face-top    { transform: rotateX( 90deg) translateZ(75px); }
 .cube-face-bottom { transform: rotateX(-90deg) translateZ(75px); }
+*/
 
 /* Subtle scrollbar styling */
 ::-webkit-scrollbar {
