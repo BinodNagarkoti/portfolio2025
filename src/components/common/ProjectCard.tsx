@@ -15,12 +15,12 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
   return (
     <Card className="group flex flex-col h-full overflow-hidden shadow-lg rounded-xl transform transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 bg-card/90 backdrop-blur-sm">
       <CardHeader className="p-0 relative">
-        <div className="aspect-video overflow-hidden relative">
+        <div className="aspect-video overflow-hidden relative bg-muted/20">
           <Image
             src={project.imageUrl}
             alt={project.title}
             fill
-            className="object-cover transition-transform duration-500 group-hover:scale-110"
+            className="object-contain transition-transform duration-500 group-hover:scale-105 p-2"
             data-ai-hint={project.imageHint}
             sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
