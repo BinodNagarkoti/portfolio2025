@@ -80,7 +80,7 @@ const P5Sketch: React.FC = () => {
             if (sketchRef.current) {
               const parentRect = sketchRef.current.getBoundingClientRect();
               const canvas = p.createCanvas(parentRect.width, parentRect.height, p.WEBGL);
-              // canvas.elt.style.backgroundColor = 'transparent'; // Optional, container div style should prevail
+              canvas.elt.style.backgroundColor = 'transparent'; // Optional, container div style should prevail
 
               // Ensure WebGL context is cleared transparently after canvas creation
               if (p.drawingContext) {
