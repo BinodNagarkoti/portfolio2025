@@ -9,9 +9,12 @@ import { EyeIcon } from 'lucide-react';
 
 interface ProjectCardProps {
   project: Project;
+  isPersonalProject?: boolean;
 }
 
-const ProjectCard = ({ project }: ProjectCardProps) => {
+const ProjectCard = ({ project, isPersonalProject = false }: ProjectCardProps) => {
+  const buttonLabel = isPersonalProject ? 'Live Demo' : 'Visit Site';
+
   return (
     <Card className="group flex flex-col h-full overflow-hidden shadow-lg rounded-xl transform transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 bg-card/90 backdrop-blur-sm">
       <CardHeader className="p-0 relative">
@@ -68,12 +71,12 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
           {project.liveLink && project.liveLink !== '#' ? (
             <Button variant="default" asChild className="bg-primary hover:bg-accent hover:text-accent-foreground text-primary-foreground flex-grow transition-colors">
               <Link href={project.liveLink} target="_blank" rel="noopener noreferrer">
-                <EyeIcon className="mr-2 h-4 w-4" /> Live Demo
+                <EyeIcon className="mr-2 h-4 w-4" /> {buttonLabel}
               </Link>
             </Button>
           ) : (
              <Button variant="outline" disabled className="flex-grow">
-                <EyeIcon className="mr-2 h-4 w-4" /> Live Demo
+                <EyeIcon className="mr-2 h-4 w-4" /> {buttonLabel}
               </Button>
           )}
         </div>

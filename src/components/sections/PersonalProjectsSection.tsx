@@ -12,7 +12,7 @@ const PersonalProjectsSection = () => {
     <SectionWrapper id="personal-projects" title="Personal Projects" subtitle="Explorations & AI Experiments">
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         {personalProjectsData.map((project) => (
-          <ProjectCard key={project.id} project={project} />
+          <ProjectCard key={project.id} project={project} isPersonalProject={true} />
         ))}
       </div>
     </SectionWrapper>
