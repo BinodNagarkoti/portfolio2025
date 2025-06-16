@@ -27,6 +27,7 @@ const ProjectCard = ({ project, isPersonalProject = false }: ProjectCardProps) =
             data-ai-hint={project.imageHint}
             sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent group-hover:from-black/50 transition-opacity duration-300"></div>
         </div>
       </CardHeader>
       <CardContent className="p-6 flex-grow">
@@ -59,7 +60,7 @@ const ProjectCard = ({ project, isPersonalProject = false }: ProjectCardProps) =
           <h4 className="text-xs font-semibold uppercase text-muted-foreground mb-2">Category:</h4>
           <div className="flex flex-wrap gap-2">
             {project.tags.map((tag) => (
-              <Badge key={tag} variant="secondary">
+              <Badge key={tag} variant="outline" className="border-primary/30 text-primary/80 group-hover:border-accent/50 group-hover:text-accent">
                 {tag}
               </Badge>
             ))}
