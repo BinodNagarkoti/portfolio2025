@@ -27,7 +27,7 @@ const ProjectCard = ({ project, isPersonalProject = false }: ProjectCardProps) =
             data-ai-hint={project.imageHint}
             sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent group-hover:from-black/50 transition-opacity duration-300"></div>
+          {/* Removed overlay div from here */}
         </div>
       </CardHeader>
       <CardContent className="p-6 flex-grow">
