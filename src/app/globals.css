@@ -40,14 +40,15 @@
     --chart-5: 0 0% 50%;      /* Neutral Gray */
     --radius: 0.5rem;
 
-    --sidebar-background: 0 0% 98%; /* Off-white */
-    --sidebar-foreground: 0 0% 10%; /* Dark Gray */
-    --sidebar-primary: 275 100% 25%; /* Deep Indigo */
-    --sidebar-primary-foreground: 0 0% 100%; /* White */
-    --sidebar-accent: 0 0% 90%; /* Light Gray for hover */
-    --sidebar-accent-foreground: 0 0% 0%; /* Black */
-    --sidebar-border: 0 0% 85%; /* Light Gray */
-    --sidebar-ring: 275 100% 45%; /* Lighter Indigo */
+    /* Sidebar Specific Theme Variables (Light Mode) */
+    --sidebar-background: 0 0% 98%; /* Off-white, slightly different from main bg */
+    --sidebar-foreground: 0 0% 10%; /* Dark Gray for text */
+    --sidebar-primary: 275 100% 25%; /* Deep Indigo (same as main primary) */
+    --sidebar-primary-foreground: 0 0% 100%; /* White (for text on primary) */
+    --sidebar-accent: 275 100% 90%; /* Very light indigo for hover/active states */
+    --sidebar-accent-foreground: 275 100% 20%; /* Darker indigo for text on accent */
+    --sidebar-border: 0 0% 85%; /* Light Gray border */
+    --sidebar-ring: 275 100% 45%; /* Lighter Indigo for focus rings */
   }
 
   .dark {
@@ -85,14 +86,15 @@
     --chart-4: 51 100% 60%;
     --chart-5: 0 0% 70%;
 
-    --sidebar-background: 0 0% 5%; /* Very Dark Gray */
-    --sidebar-foreground: 0 0% 90%; /* Light Gray */
-    --sidebar-primary: 275 100% 65%; /* Lighter Indigo */
-    --sidebar-primary-foreground: 0 0% 10%; /* Near Black */
-    --sidebar-accent: 0 0% 20%; /* Dark Gray for hover */
-    --sidebar-accent-foreground: 0 0% 100%; /* White */
-    --sidebar-border: 0 0% 15%; /* Dark Gray */
-    --sidebar-ring: 275 100% 55%; /* Lighter Indigo */
+    /* Sidebar Specific Theme Variables (Dark Mode) */
+    --sidebar-background: 0 0% 5%; /* Very Dark Gray, almost black */
+    --sidebar-foreground: 0 0% 90%; /* Light Gray for text */
+    --sidebar-primary: 275 100% 65%; /* Lighter Indigo (same as main dark primary) */
+    --sidebar-primary-foreground: 0 0% 10%; /* Near Black for text on primary */
+    --sidebar-accent: 275 100% 20%; /* Darker Indigo for hover/active states */
+    --sidebar-accent-foreground: 0 0% 95%; /* Very light gray/white for text on accent */
+    --sidebar-border: 0 0% 15%; /* Dark Gray border */
+    --sidebar-ring: 275 100% 55%; /* Lighter Indigo for focus rings */
   }
 }
 
@@ -123,3 +125,4 @@
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--accent));
 }
+
