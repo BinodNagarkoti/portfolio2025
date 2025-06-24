@@ -1,6 +1,6 @@
 
 import * as React from 'react';
-import type { LucideIcon } from 'lucide-react';
+import type { LucideIcon, LucideProps } from 'lucide-react';
 import {
   Code2Icon,
   DatabaseIcon,
@@ -129,20 +129,13 @@ export interface SkillCategory {
 
 export interface Skill {
   name: string;
-  icon: LucideIcon | (() => JSX.Element);
+  icon: LucideIcon | ((props: LucideProps) => JSX.Element);
   level?: string;
 }
 
-// Custom SVG Icon Components (Simplified example)
-const ReactLogo = () => { 
-  return React.createElement(CpuIcon, { className: "text-sky-500" }); 
-};
-const NextLogo = () => { 
-  return React.createElement(ZapIcon, { className: "text-neutral-900 dark:text-neutral-100" }); 
-};
-const TailwindLogo = () => { 
-  return React.createElement(WindIcon, { className: "text-teal-500" });
-};
+const ReactLogo = (props: LucideProps) => React.createElement(CpuIcon, props);
+const NextLogo = (props: LucideProps) => React.createElement(ZapIcon, props);
+const TailwindLogo = (props: LucideProps) => React.createElement(WindIcon, props);
 
 
 export const skillsData: SkillCategory[] = [
@@ -210,4 +203,3 @@ export const personalInfo = {
   linkedin: 'https://linkedin.com/in/yourusername',
   cvLink: '/binod_nagarkoti.pdf' 
 };
-
