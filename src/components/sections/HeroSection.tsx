@@ -51,15 +51,18 @@ const HeroSection = () => {
           <div className="hidden md:flex items-center justify-center animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
             {/* Use the new P5Sketch component */}
             <PixelTransition
-            firstContent={<Image
-              src="/me.png"
-              alt={personalInfo.name}
-              width={400}
-              height={500}
-              className="object-cover w-full h-full filter grayscale"
-              data-ai-hint="profile picture"
-              priority // Adding priority for LCP improvement
-            />
+            firstContent={
+              <div className="relative w-full h-full [mask-image:radial-gradient(ellipse_at_center,white_60%,transparent_100%)]">
+                <Image
+                  src="/me.png"
+                  alt={personalInfo.name}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  className="object-cover filter grayscale"
+                  data-ai-hint="profile picture"
+                  priority
+                />
+              </div>
             }
             secondContent={
               <div
