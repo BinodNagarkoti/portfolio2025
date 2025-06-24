@@ -56,7 +56,7 @@ const HeroSection = () => {
               alt={personalInfo.name}
               width={400}
               height={500}
-              className="object-cover w-full h-full"
+              className="object-cover w-full h-full filter grayscale"
               data-ai-hint="profile picture"
               priority // Adding priority for LCP improvement
             />
