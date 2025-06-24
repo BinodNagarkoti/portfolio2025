@@ -47,7 +47,7 @@ const Navbar = () => {
 
           <nav className="hidden md:flex space-x-2">
             {navItems.map((item) => (
-              <Button key={item.name} variant="ghost" asChild className="text-foreground hover:text-primary hover:bg-primary/10">
+              <Button key={item.name} variant="ghost" asChild className="text-primary-foreground hover:text-primary hover:bg-primary/10">
                 <Link href={item.href}>{item.name}</Link>
               </Button>
             ))}
@@ -70,7 +70,7 @@ const Navbar = () => {
                 key={item.name}
                 variant="ghost"
                 asChild
-                className="w-full text-foreground hover:text-primary hover:bg-primary/10 text-lg"
+                className="w-full text-primary-foreground hover:text-primary hover:bg-primary/10 text-lg"
                 onClick={() => setIsOpen(false)}
               >
                 <Link href={item.href}>{item.name}</Link>
