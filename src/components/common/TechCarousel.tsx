@@ -72,13 +72,14 @@ const TechCarousel = () => {
             "flex w-max animate-marquee gap-4",
             rowIndex % 2 !== 0 && "marquee-reverse"
           )}
-          style={{ '--marquee-duration': `${row.length * 5}s` } as React.CSSProperties}
+          style={{ '--marquee-duration': `${row.length * 6}s` } as React.CSSProperties}
         >
           {[...row, ...row].map((tech, techIndex) => {
             const Icon = tech.icon;
             return (
-              <div key={`${rowIndex}-${techIndex}`} className="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-2xl bg-card p-3 shadow-md backdrop-blur-sm">
+              <div key={`${rowIndex}-${techIndex}`} className="flex flex-col h-24 w-24 flex-shrink-0 items-center justify-center gap-2 rounded-2xl bg-card p-2 shadow-md backdrop-blur-sm">
                 <Icon className={cn("h-10 w-10 text-muted-foreground", tech.color)} />
+                <p className="text-xs text-center text-muted-foreground font-medium truncate w-full">{tech.name}</p>
               </div>
             );
           })}
