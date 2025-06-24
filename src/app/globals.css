@@ -5,96 +5,75 @@
 
 @layer base {
   :root {
-    --background: 0 0% 94%; /* PRD: Light Gray (#F0F0F0) */
-    --foreground: 0 0% 10%; /* Custom: Near Black for contrast on Light Gray */
-
-    --card: 0 0% 100%; /* White */
-    --card-foreground: 0 0% 10%; /* Custom: Near Black for contrast on White card */
-
-    --popover: 0 0% 100%; /* White */
-    --popover-foreground: 0 0% 10%; /* Custom: Near Black */
-
-    --primary: 275 100% 25%; /* PRD: Deep Indigo (#4B0082) */
-    --primary-foreground: 0 0% 100%; /* White (for contrast on Deep Indigo) */
-
-    --secondary: 0 0% 88%; /* Custom: Slightly darker than main Light Gray bg */
-    --secondary-foreground: 0 0% 10%; /* Custom: Near Black */
-
-    --muted: 0 0% 85%; /* Custom: Light Gray */
-    --muted-foreground: 0 0% 30%; /* Custom: Darker Gray */
-
-    --accent: 51 100% 50%; /* PRD: Gold (#FFD700) */
-    --accent-foreground: 0 0% 10%; /* Custom: Near Black (for contrast on Gold) */
-
-    --destructive: 0 84.2% 60.2%; /* Default destructive red */
-    --destructive-foreground: 0 0% 98%; /* Default light text for destructive */
-
-    --border: 0 0% 80%; /* Custom: Slightly darker for definition */
-    --input: 0 0% 98%; /* Custom: Almost white, distinct from main bg */
-    --ring: 275 100% 45%; /* Custom: Lighter shade of primary for focus rings */
-
-    --chart-1: 275 100% 35%; /* Shades of Deep Indigo */
-    --chart-2: 275 100% 45%;
-    --chart-3: 51 100% 60%;   /* Shades of Gold */
-    --chart-4: 51 100% 70%;
-    --chart-5: 0 0% 50%;      /* Neutral Gray */
-    --radius: 0.5rem;
-
-    /* Sidebar Specific Theme Variables (Light Mode) */
-    --sidebar-background: 0 0% 98%; /* Off-white, slightly different from main bg */
-    --sidebar-foreground: 0 0% 10%; /* Dark Gray for text */
-    --sidebar-primary: 275 100% 25%; /* Deep Indigo (same as main primary) */
-    --sidebar-primary-foreground: 0 0% 100%; /* White (for text on primary) */
-    --sidebar-accent: 275 100% 90%; /* Very light indigo for hover/active states */
-    --sidebar-accent-foreground: 275 100% 20%; /* Darker indigo for text on accent */
-    --sidebar-border: 0 0% 85%; /* Light Gray border */
-    --sidebar-ring: 275 100% 45%; /* Lighter Indigo for focus rings */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9216%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9216%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9216%;
+    --primary: 0 0% 45.0980%;
+    --primary-foreground: 0 0% 98.0392%;
+    --secondary: 0 0% 96.0784%;
+    --secondary-foreground: 0 0% 9.0196%;
+    --muted: 0 0% 96.0784%;
+    --muted-foreground: 0 0% 44.3137%;
+    --accent: 0 0% 96.0784%;
+    --accent-foreground: 0 0% 9.0196%;
+    --destructive: 357.1429 100% 45.2941%;
+    --destructive-foreground: 0 0% 96.0784%;
+    --border: 0 0% 89.8039%;
+    --input: 0 0% 89.8039%;
+    --ring: 0 0% 63.1373%;
+    --chart-1: 0 0% 45.0980%;
+    --chart-2: 0 0% 45.0980%;
+    --chart-3: 0 0% 45.0980%;
+    --chart-4: 0 0% 45.0980%;
+    --chart-5: 0 0% 45.0980%;
+    --sidebar-background: 0 0% 98.0392%;
+    --sidebar-foreground: 0 0% 3.9216%;
+    --sidebar-primary: 0 0% 9.0196%;
+    --sidebar-primary-foreground: 0 0% 98.0392%;
+    --sidebar-accent: 0 0% 96.0784%;
+    --sidebar-accent-foreground: 0 0% 9.0196%;
+    --sidebar-border: 0 0% 89.8039%;
+    --sidebar-ring: 0 0% 63.1373%;
+    --radius: 0rem;
   }
 
   .dark {
-    --background: 0 0% 10%; /* Near Black */
-    --foreground: 0 0% 94%; /* Light Gray (F0F0F0 for text) */
-
-    --card: 0 0% 15%; /* Darker Gray */
-    --card-foreground: 0 0% 94%; /* Light Gray */
-
-    --popover: 0 0% 15%; /* Darker Gray */
-    --popover-foreground: 0 0% 94%; /* Light Gray */
-
-    --primary: 275 100% 65%; /* Lighter Deep Indigo for dark mode */
-    --primary-foreground: 0 0% 10%; /* Near Black (contrast on lighter Indigo) */
-
-    --secondary: 0 0% 20%; /* Dark Gray */
-    --secondary-foreground: 0 0% 88%; /* Lighter Gray */
-
-    --muted: 0 0% 25%; /* Dark Gray */
-    --muted-foreground: 0 0% 70%; /* Medium-Light Gray */
-
-    --accent: 51 100% 60%; /* Slightly desaturated/lighter Gold for dark mode */
-    --accent-foreground: 0 0% 10%; /* Near Black (contrast on Gold) */
-    
-    --destructive: 0 62.8% 30.6%; /* Darker destructive red */
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 0 0% 30%; /* Dark Gray Border */
-    --input: 0 0% 20%; /* Dark Gray Input Background */
-    --ring: 275 100% 55%; /* Lighter Indigo for focus rings */
-    
-    --chart-1: 275 100% 55%;
-    --chart-2: 275 100% 65%;
-    --chart-3: 51 100% 50%; 
-    --chart-4: 51 100% 60%;
-    --chart-5: 0 0% 70%;
-
-    /* Sidebar Specific Theme Variables (Dark Mode) */
-    --sidebar-background: 0 0% 5%; /* Very Dark Gray, almost black */
-    --sidebar-foreground: 0 0% 90%; /* Light Gray for text */
-    --sidebar-primary: 275 100% 65%; /* Lighter Indigo (same as main dark primary) */
-    --sidebar-primary-foreground: 0 0% 10%; /* Near Black for text on primary */
-    --sidebar-accent: 275 100% 20%; /* Darker Indigo for hover/active states */
-    --sidebar-accent-foreground: 0 0% 95%; /* Very light gray/white for text on accent */
-    --sidebar-border: 0 0% 15%; /* Dark Gray border */
-    --sidebar-ring: 275 100% 55%; /* Lighter Indigo for focus rings */
+    --background: 0 0% 3.9216%;
+    --foreground: 0 0% 98.0392%;
+    --card: 0 0% 9.8039%;
+    --card-foreground: 0 0% 98.0392%;
+    --popover: 0 0% 14.9020%;
+    --popover-foreground: 0 0% 98.0392%;
+    --primary: 0 0% 45.0980%;
+    --primary-foreground: 0 0% 98.0392%;
+    --secondary: 0 0% 14.9020%;
+    --secondary-foreground: 0 0% 98.0392%;
+    --muted: 0 0% 14.9020%;
+    --muted-foreground: 0 0% 63.1373%;
+    --accent: 0 0% 25.0980%;
+    --accent-foreground: 0 0% 98.0392%;
+    --destructive: 358.8387 100% 69.6078%;
+    --destructive-foreground: 0 0% 14.9020%;
+    --border: 0 0% 21.9608%;
+    --input: 0 0% 32.1569%;
+    --ring: 0 0% 45.0980%;
+    --chart-1: 0 0% 45.0980%;
+    --chart-2: 0 0% 45.0980%;
+    --chart-3: 0 0% 45.0980%;
+    --chart-4: 0 0% 45.0980%;
+    --chart-5: 0 0% 45.0980%;
+    --sidebar-background: 0 0% 9.0196%;
+    --sidebar-foreground: 0 0% 98.0392%;
+    --sidebar-primary: 0 0% 98.0392%;
+    --sidebar-primary-foreground: 0 0% 9.0196%;
+    --sidebar-accent: 0 0% 14.9020%;
+    --sidebar-accent-foreground: 0 0% 98.0392%;
+    --sidebar-border: 0 0% 100%;
+    --sidebar-ring: 0 0% 32.1569%;
+    --radius: 0rem;
   }
 }
 
@@ -125,4 +104,3 @@
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--accent));
 }
-
