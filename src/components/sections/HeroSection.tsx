@@ -49,38 +49,38 @@ const HeroSection = () => {
             </div>
           </div>
           <div className="hidden md:flex items-center justify-center animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-            {/* Use the new P5Sketch component */}
             <PixelTransition
-            firstContent={
-              <div className="relative w-full h-full [mask-image:radial-gradient(ellipse_at_center,white_60%,transparent_100%)]">
-                <Image
-                  src="/me.png"
-                  alt={personalInfo.name}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover filter grayscale"
-                  data-ai-hint="profile picture"
-                  priority
-                />
-              </div>
-            }
-            secondContent={
-              <div
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  display: "grid",
-                  placeItems: "center",
-                  backgroundColor: "#111"
-                }}
-              >
-                <p style={{ fontWeight: 900, fontSize: "3rem", color: "#ffffff" }}>Hire Me!</p>
-              </div>
-            }
-            pixelColor='#ffffff'
-            animationStepDuration={0.4}
-            className="custom-pixel-card"
-          />
+              firstContent={
+                <div className="relative w-full h-full">
+                  <Image
+                    src="/me.png"
+                    alt={personalInfo.name}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover filter grayscale"
+                    data-ai-hint="profile picture"
+                    priority
+                  />
+                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_50%,hsl(var(--background)))]" />
+                </div>
+              }
+              secondContent={
+                <div
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    display: "grid",
+                    placeItems: "center",
+                    backgroundColor: "#111"
+                  }}
+                >
+                  <p style={{ fontWeight: 900, fontSize: "3rem", color: "#ffffff" }}>Hire Me!</p>
+                </div>
+              }
+              pixelColor='#ffffff'
+              animationStepDuration={0.4}
+              className="custom-pixel-card"
+            />
           </div>
         </div>
       </div>
