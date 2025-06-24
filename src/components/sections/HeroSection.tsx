@@ -85,3 +85,10 @@ const HeroSection = () => {
 };
 
 export default HeroSection;
+
+
+// HTML,CSS, 
+// Javascript, React, JQuery,Nodejs,Expressjs, MongoDB, Mongoose, MongoDB Atlas,
+// Tailwindcss, Shadcn UI, Git, Github, Heroku, Vercel, Nextjs, TypeScript,
+// Redux, Firebase, Zod, Khalti, Stripe, AWS, Docker, Supabase, Cpanel, Wordpress, WIX, Canva, Figma,
+// Axios, React Router DOM,React Error Boundary, formik,React Router, React Hook Form,
