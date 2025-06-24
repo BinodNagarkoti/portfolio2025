@@ -1,3 +1,4 @@
+
 'use client'; 
 
 import Link from 'next/link';
@@ -30,7 +31,7 @@ const HeroSection = () => {
           <BlurText component={'span'} text='Hello, I&apos;m' className="text-lg font-semibold uppercase tracking-wider font-headline text-primary" />
             <BlurText component='h1' text={personalInfo.name} className="mt-2 text-5xl md:text-6xl lg:text-7xl font-bold font-headline text-foreground" />
             <p className="mt-4 text-xl md:text-2xl text-foreground">
-              A passionate <span className="text-black">{personalInfo.title}</span> specializing in creating modern and performant web applications.
+              A passionate <span className="text-primary font-semibold">{personalInfo.title}</span> specializing in creating modern and performant web applications.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
               <Button size="lg" asChild className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg transform transition-transform hover:scale-105">
@@ -39,7 +40,7 @@ const HeroSection = () => {
                 </Link>
               </Button>
               {personalInfo.cvLink && (
-                 <Button variant="outline" size="lg" asChild className="border-primary text-primary hover:text-black hover:bg-primary/10 shadow-lg transform transition-transform hover:scale-105">
+                 <Button variant="outline" size="lg" asChild className="border-primary text-primary hover:bg-primary/10 shadow-lg transform transition-transform hover:scale-105">
                   <Link href={personalInfo.cvLink} target="_blank" download>
                     Download CV <DownloadIcon className="ml-2 h-5 w-5" />
                   </Link>
