@@ -1,17 +1,15 @@
-import Image from 'next/image';
+import TechCarousel from '@/components/common/TechCarousel';
 import SectionWrapper from '@/components/common/SectionWrapper';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BriefcaseIcon, GraduationCapIcon, SparklesIcon } from 'lucide-react';
+import { BriefcaseIcon, GraduationCapIcon } from 'lucide-react';
 import { personalInfo } from '@/lib/data';
 
 const AboutSection = () => {
   return (
     <SectionWrapper id="about" title="About Me" subtitle="My Journey">
       <div className="grid md:grid-cols-5 gap-12 items-center">
-        <div className="md:col-span-2 flex justify-center md:justify-start">
-          <Card className="overflow-hidden shadow-xl w-full max-w-sm transform transition-all hover:scale-105 hover:shadow-2xl">
-          
-          </Card>
+        <div className="md:col-span-2 flex justify-center md:justify-start h-full">
+          <TechCarousel />
         </div>
         <div className="md:col-span-3 space-y-6">
           <h3 className="text-2xl font-semibold text-foreground font-headline">
