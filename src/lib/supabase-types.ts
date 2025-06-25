@@ -93,14 +93,14 @@ export interface Project {
   title: string;
   description: string;
   long_description?: string | null;
-  technologies?: string[] | null; // Array of text
+  technologies: string[] | null; // Array of text
   cover_image_url?: string | null; // URL to image in Supabase Storage
   live_link?: string | null;
   github_link?: string | null;
   project_type: ProjectType;
-  category_tags?: string[] | null; // Array of text, e.g., ["FinTech", "E-commerce"]
-  created_at?: string;
-  updated_at?: string;
+  category_tags: string[] | null; // Array of text, e.g., ["FinTech", "E-commerce"]
+  created_at: string;
+  updated_at: string;
 }
 
 export interface ContactSubmission {

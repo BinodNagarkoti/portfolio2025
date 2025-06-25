@@ -2,15 +2,16 @@
 import Image from 'next/image';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import type { Project } from '@/lib/data';
+import type { Project } from '@/lib/supabase-types';
 import { cn } from '@/lib/utils';
 
 interface ProjectCardProps {
   project: Project;
+  cardStyle?: 'light' | 'dark'; // This can be controlled by data or logic later
 }
 
-const ProjectCard = ({ project }: ProjectCardProps) => {
-  const isDark = project.cardStyle === 'dark';
+const ProjectCard = ({ project, cardStyle }: ProjectCardProps) => {
+  const isDark = cardStyle === 'dark';
 
   return (
     <Card className={cn(
@@ -22,14 +23,26 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
           "aspect-video overflow-hidden relative", 
           isDark ? 'bg-secondary/20' : 'bg-muted/30'
         )}>
-          <Image
-            src={project.imageUrl}
-            alt={project.title}
-            fill
-            className="object-contain transition-transform duration-500 group-hover:scale-105 p-4"
-            data-ai-hint={project.imageHint}
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          />
+          {project.cover_image_url ? (
+             <Image
+              src={project.cover_image_url}
+              alt={project.title}
+              fill
+              className="object-contain transition-transform duration-500 group-hover:scale-105 p-4"
+              data-ai-hint={project.title.toLowerCase().split(' ').slice(0,2).join(' ')}
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            />
+          ) : (
+            <Image
+              src={'https://placehold.co/600x400.png'}
+              alt={project.title}
+              fill
+              className="object-contain transition-transform duration-500 group-hover:scale-105 p-4"
+              data-ai-hint="placeholder abstract"
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            />
+          )}
+         
         </div>
       </CardHeader>
       <CardContent className="p-4 flex-grow">
@@ -42,7 +55,7 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
       </CardContent>
       <CardFooter className="p-4 pt-0">
         <div className="flex flex-wrap gap-2">
-          {project.tags.map((tag) => ( 
+          {project.category_tags?.map((tag) => ( 
             <Badge 
               key={tag} 
               variant={isDark ? 'secondary' : 'outline'}
