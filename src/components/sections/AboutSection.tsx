@@ -1,51 +1,52 @@
-import TechCarousel from '@/components/common/TechCarousel';
 import SectionWrapper from '@/components/common/SectionWrapper';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BriefcaseIcon, GraduationCapIcon } from 'lucide-react';
-import { personalInfo } from '@/lib/data';
+import { Progress } from '@/components/ui/progress';
+import { skillsData, type Skill } from '@/lib/data';
+
+const mainSkills: Skill[] = skillsData.find(cat => cat.name === 'Frontend Development')?.skills.slice(0, 4) || [];
+
+const skillToProgress = (skill: Skill) => {
+  switch (skill.level) {
+    case 'Expert': return 95;
+    case 'Intermediate': return 75;
+    case 'Basic': return 50;
+    default: return 0;
+  }
+}
 
 const AboutSection = () => {
   return (
-    <SectionWrapper id="about" title="About Me" subtitle="My Journey">
-      <div className="grid md:grid-cols-5 gap-12 items-center">
-        <div className="md:col-span-2 flex justify-center md:justify-start h-full">
-          <TechCarousel />
-        </div>
-        <div className="md:col-span-3 space-y-6">
-          <h3 className="text-2xl font-semibold text-foreground font-headline">
-            {personalInfo.title} from {personalInfo.location}
-          </h3>
-          <p className="text-lg text-muted-foreground leading-relaxed">
-            I am a Bachelor of Information Technology (BIT) graduate from the College of Information Technology and Engineering (CITE), Purvanchal University (PU), Nepal. With a deep passion for web application development, I specialize in leveraging the JavaScript MERN stack (MongoDB, Express.js, React.js, Node.js) and TypeScript to build robust and scalable solutions.
-          </p>
-          <p className="text-lg text-muted-foreground leading-relaxed">
-            My experience spans across designing and developing diverse applications, from algorithmic trading platforms to e-commerce sites and content management systems. I thrive in dynamic environments, continuously exploring new technologies to deliver cutting-edge products.
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8">
-            <Card className="shadow-lg hover:shadow-xl transition-shadow">
-              <CardHeader className="flex flex-row items-center gap-3 pb-3">
-                <GraduationCapIcon className="w-8 h-8 text-primary" />
-                <CardTitle className="font-headline text-xl">Education</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="font-semibold">Bachelor of Information Technology (BIT)</p>
-                <p className="text-sm text-muted-foreground">Purvanchal University, CITE, Nepal</p>
-                <p className="text-sm text-muted-foreground">2014 – 2018</p>
-              </CardContent>
-            </Card>
-            <Card className="shadow-lg hover:shadow-xl transition-shadow">
-              <CardHeader className="flex flex-row items-center gap-3 pb-3">
-                <BriefcaseIcon className="w-8 h-8 text-primary" />
-                <CardTitle className="font-headline text-xl">Experience Highlights</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="font-semibold">Frontend Engineer @ Investfly</p>
-                <p className="text-sm text-muted-foreground">Full Stack Developer @ Omistics Technology</p>
-                <p className="text-sm text-muted-foreground">Focus on MERN, Next.js, AWS</p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+    <SectionWrapper id="about" title="About Me" subtitle="">
+      <div className="grid md:grid-cols-2 gap-8 items-start">
+        <Card>
+          <CardHeader>
+            <CardTitle>Professional Background</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4 text-muted-foreground">
+            <p>
+              I am a Bachelor of Information Technology (BIT) graduate from the College of Information Technology and Engineering (CITE), Purvanchal University (PU), Nepal. With a deep passion for web application development, I specialize in leveraging the JavaScript MERN stack (MongoDB, Express.js, React.js, Node.js) and TypeScript to build robust and scalable solutions.
+            </p>
+            <p>
+              My experience spans across designing and developing diverse applications, from algorithmic trading platforms to e-commerce sites and content management systems. I thrive in dynamic environments, continuously exploring new technologies to deliver cutting-edge products.
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Technical Skills</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {mainSkills.map(skill => (
+              <div key={skill.name}>
+                <div className="flex justify-between items-center mb-1">
+                  <span className="font-medium text-sm text-foreground">{skill.name}</span>
+                  <span className="text-xs text-muted-foreground">{skillToProgress(skill)}%</span>
+                </div>
+                <Progress value={skillToProgress(skill)} />
+              </div>
+            ))}
+          </CardContent>
+        </Card>
       </div>
     </SectionWrapper>
   );

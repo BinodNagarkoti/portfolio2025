@@ -24,8 +24,7 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased relative">
-      <Squares className="absolute inset-0 z-0 size-full" speed={0.5} squareSize={40} direction='diagonal' borderColor='hsl(var(--border))' hoverFillColor='hsl(var(--accent))' />
-
+        <Squares className="absolute inset-0 -z-10 size-full" speed={0.2} squareSize={30} borderColor='hsl(var(--border) / 0.5)' hoverFillColor='hsl(var(--accent) / 0.1)' />
         <Navbar />
         <main>{children}</main>
         <Footer />
