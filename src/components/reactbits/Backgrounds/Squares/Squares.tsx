@@ -1,7 +1,7 @@
+'use client'
 /*
 	Installed from https://reactbits.dev/ts/tailwind/
 */
-
 import { cx } from "class-variance-authority";
 import React, { useRef, useEffect } from "react";
 

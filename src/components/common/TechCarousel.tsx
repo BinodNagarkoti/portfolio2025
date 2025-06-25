@@ -1,4 +1,5 @@
 'use client';
+import { useState, useRef } from 'react';
 
 import {
   Code2Icon, DatabaseIcon, ServerCogIcon, CloudIcon, ContainerIcon, GitForkIcon,
@@ -9,48 +10,49 @@ import {
 import type { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { JQueryIcon, FormikIcon, VercelIcon, ReactRouterIcon } from './Icons';
-
-const techIcons: { name: string;svg_icon:string; icon: LucideIcon | React.FC<React.SVGProps<SVGSVGElement>>; color?: string }[] = [
-  { name: 'HTML', icon: Code2Icon,svg_icon:'./html.svg' },
-  { name: 'CSS', icon: Code2Icon,svg_icon:'./css3.svg' },
-  { name: 'Javascript', icon: Code2Icon, color: "text-yellow-400",svg_icon:'./javascriptjs.svg' },
-  { name: 'React', icon: CpuIcon, color: "text-sky-400",svg_icon:'./reactjs.svg' },
-  { name: 'JQuery', icon: JQueryIcon,svg_icon:'./jquery.js' },
-  { name: 'Node.js', icon: ServerCogIcon, color: "text-green-500",svg_icon:'./nodejs.svg' },
-  { name: 'Express.js', icon: RouteIcon,svg_icon:'./expressjs.svg' },
-  { name: 'MongoDB', icon: DatabaseIcon, color: "text-green-600",svg_icon:'./mongodb.svg' },
-  { name: 'MySQL', icon: DatabaseIcon,svg_icon:'./mysql.svg' },
-  { name: 'GraphQL', icon: Share2Icon, color: "text-pink-500",svg_icon:'./graphql.svg' },
-  { name: 'PostgreSQL', icon: DatabaseIcon, color: "text-blue-500",svg_icon:'./postgreaql.svg' },
-  { name: 'Google OAuth', icon: ShieldCheckIcon, color: "text-red-500",svg_icon:'./Oauth.sg' },
+import Image from 'next/image';
+type TechIconType ={
+  name: string;svg_icon:string; icon: LucideIcon | React.FC<React.SVGProps<SVGSVGElement>>; color?: string 
+}
+const techIcons: TechIconType[] = [
+  { name: 'HTML', icon: Code2Icon,svg_icon:'/html.svg' },
+  { name: 'CSS', icon: Code2Icon,svg_icon:'/css3.svg' },
+  { name: 'Javascript', icon: Code2Icon, color: "text-yellow-400",svg_icon:'/javascript.svg' },
+  { name: 'React', icon: CpuIcon, color: "text-sky-400",svg_icon:'/react.svg' },
+  { name: 'JQuery', icon: JQueryIcon,svg_icon:'/jquery.js' },
+  { name: 'Node.js', icon: ServerCogIcon, color: "text-green-500",svg_icon:'/nodejs.svg' },
+  { name: 'Express.js', icon: RouteIcon,svg_icon:'/express.svg' },
+  { name: 'MongoDB', icon: DatabaseIcon, color: "text-green-600",svg_icon:'/mongodb.svg' },
+  { name: 'MySQL', icon: DatabaseIcon,svg_icon:'/mysql.svg' },
+  { name: 'GraphQL', icon: Share2Icon, color: "text-pink-500",svg_icon:'/graphql.svg' },
+  { name: 'PostgreSQL', icon: DatabaseIcon, color: "text-blue-500",svg_icon:'/postgreaql.svg' },
+  { name: 'Google OAuth', icon: ShieldCheckIcon, color: "text-red-500",svg_icon:'/oauth.sg' },
   { name: 'Tailwind CSS', icon: WindIcon, color: "text-cyan-400",svg_icon:'taiwindcss.svg' },
-  { name: 'Shadcn UI', icon: PaletteIcon,svg_icon:'./shadcn.svg' },
-  { name: 'Git', icon: GitForkIcon, color: "text-orange-500",svg_icon:'./git.svg' },
-  { name: 'Github', icon: GithubIcon,svg_icon:'./github.svg' },
-  { name: 'Heroku', icon: CloudIcon, color: "text-purple-500",svg_icon:'./heroku.svg' },
-  { name: 'Vercel', icon: VercelIcon,svg_icon:'./vercel.svg' },
-  { name: 'Next.js', icon: ZapIcon,svg_icon:'nextjs.svg' },
+  { name: 'Shadcn UI', icon: PaletteIcon,svg_icon:'/shadcnui.svg' },
+  { name: 'Git', icon: GitForkIcon, color: "text-orange-500",svg_icon:'/git.svg' },
+  { name: 'Github', icon: GithubIcon,svg_icon:'/github.svg' },
+  { name: 'Heroku', icon: CloudIcon, color: "text-purple-500",svg_icon:'/heroku.svg' },
+  { name: 'Vercel', icon: VercelIcon,svg_icon:'/vercel.svg' },
+  { name: 'Next.js', icon: ZapIcon,svg_icon:'next.js.svg' },
   { name: 'TypeScript', icon: Code2Icon, color: "text-blue-400",svg_icon:'javascript.svg' },
-  { name: 'Redux', icon: RefreshCwIcon, color: "text-purple-400",svg_icon:'./redux.svg' },
-  { name: 'Firebase', icon: ZapIcon, color: "text-yellow-500",svg_icon:'./firebase.svg' },
-  { name: 'Zod', icon: CheckCheckIcon, color: "text-blue-600",svg_icon:'./zod.svg' },
-  { name: 'Khalti', icon: CreditCardIcon, color: "text-purple-600",svg_icon:'./khalti.svg' },
-  { name: 'Stripe', icon: CreditCardIcon, color: "text-indigo-500",svg_icon:'./stripe.svg' },
-  { name: 'AWS', icon: CloudIcon, color: "text-orange-400",svg_icon:'./aws/svg' },
-  { name: 'Docker', icon: ContainerIcon, color: "text-sky-500",svg_icon:'./docker.svg' },
-  { name: 'Supabase', icon: ShieldCheckIcon, color: "text-green-500",svg_icon:'./supabase.svg' },
-  { name: 'Cpanel', icon: Settings2Icon,svg_icon:'./cpanel.svg' },
-  { name: 'Wordpress', icon: GlobeIcon, color: "text-blue-600",svg_icon:'./wordpress.svg' },
-  { name: 'WIX', icon: MousePointerClickIcon,svg_icon:'./wix.svg' },
-  { name: 'Canva', icon: PaletteIcon, color: "text-teal-400",svg_icon:'./canva.svg' },
-  { name: 'Figma', icon: PaletteIcon, color: "text-pink-400",svg_icon:'./figma.svg' },
-  { name: 'Axios', icon: Code2Icon,svg_icon:'./axios.svg' },
-  { name: 'React Router DOM', icon: ReactRouterIcon,svg_icon:'./react-router.svg' },
-  { name: 'Formik', icon: FormikIcon,svg_icon:'./formik.svg' },
-  { name: 'React Hook Form', icon: WrenchIcon,svg_icon:'./react-hook-form.svg' },
+  { name: 'Redux', icon: RefreshCwIcon, color: "text-purple-400",svg_icon:'/redux.svg' },
+  { name: 'Firebase', icon: ZapIcon, color: "text-yellow-500",svg_icon:'/firebase.svg' },
+  { name: 'Zod', icon: CheckCheckIcon, color: "text-blue-600",svg_icon:'/zod.svg' },
+  { name: 'Khalti', icon: CreditCardIcon, color: "text-purple-600",svg_icon:'/khalti.svg' },
+  { name: 'Stripe', icon: CreditCardIcon, color: "text-indigo-500",svg_icon:'/stripe.svg' },
+  { name: 'AWS', icon: CloudIcon, color: "text-orange-400",svg_icon:'/aws/svg' },
+  { name: 'Docker', icon: ContainerIcon, color: "text-sky-500",svg_icon:'/docker.svg' },
+  { name: 'Supabase', icon: ShieldCheckIcon, color: "text-green-500",svg_icon:'/supabase.svg' },
+  { name: 'Cpanel', icon: Settings2Icon,svg_icon:'/cpanel.svg' },
+  { name: 'Wordpress', icon: GlobeIcon, color: "text-blue-600",svg_icon:'/wordpress.svg' },
+  { name: 'WIX', icon: MousePointerClickIcon,svg_icon:'/wix.svg' },
+  { name: 'Axios', icon: Code2Icon,svg_icon:'/axios.svg' },
+  { name: 'React Router DOM', icon: ReactRouterIcon,svg_icon:'/react-router.svg' },
+  { name: 'Formik', icon: FormikIcon,svg_icon:'/formik.svg' },
+  { name: 'React Hook Form', icon: WrenchIcon,svg_icon:'/react-hook-form.svg' },
 ];
 
-const chunkArray = <T>(array: T[], size: number): T[][] => {
+const chunkArray = <T,>(array: T[], size: number): T[][] => {
   const chunkedArr: T[][] = [];
   let index = 0;
   while (index < array.length) {
@@ -62,10 +64,22 @@ const chunkArray = <T>(array: T[], size: number): T[][] => {
 
 const TechCarousel = () => {
   const iconRows = chunkArray(techIcons, 6);
+  const [showCopied, setShowCopied] = useState<string | null>(null);
+  const timer = useRef<number | null>(null);
 
+  const handleIconClick = (event: React.MouseEvent<HTMLElement>, techName: string) => {
+    event.stopPropagation();
+    if (timer.current) {
+      clearTimeout(timer.current);
+    }
+    setShowCopied(techName);
+    timer.current = window.setTimeout(() => {
+      setShowCopied(null);
+    }, 2000);
+  };  
   return (
     <div className="relative flex flex-col gap-4 overflow-hidden rounded-2xl bg-card/50 p-4 shadow-inner md:h-full">
-      {iconRows.map((row, rowIndex) => (
+      {iconRows.map((row:TechIconType[], rowIndex:number) => (
         <div
           key={rowIndex}
           className={cn(
@@ -74,12 +88,34 @@ const TechCarousel = () => {
           )}
           style={{ '--marquee-duration': `${row.length * 6}s` } as React.CSSProperties}
         >
-          {[...row, ...row].map((tech, techIndex) => {
+          {[...row, ...row].map((tech:TechIconType, techIndex:number) => {
             const Icon = tech.icon;
             return (
-              <div key={`${rowIndex}-${techIndex}`} className="flex flex-col h-24 w-24 flex-shrink-0 items-center justify-center gap-2 rounded-2xl bg-card p-2 shadow-md backdrop-blur-sm">
-                <Icon className={cn("h-10 w-10 text-muted-foreground", tech.color)} />
-                <p className="text-xs text-center text-muted-foreground font-medium truncate w-full">{tech.name}</p>
+              <div 
+              onClick={(event) => {
+                const svg = event.currentTarget.querySelector('svg');
+                const textArea = document.createElement('textarea');
+                textArea.value = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">${svg?.outerHTML?.replace(/style=".*?"/, '')}</svg>`;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                textArea.remove();
+                handleIconClick(event,tech.name);
+              }}
+              key={`${rowIndex}-${techIndex}`} className="flex flex-col h-24 w-24 flex-shrink-0 items-center justify-center gap-2 rounded-2xl bg-card p-2 shadow-md backdrop-blur-sm">
+                 <Image
+                  title={tech.name}
+                  src={tech.svg_icon}
+                  alt={tech.name}
+                  layout="responsive"
+                  width={20}
+                  height={20}
+                  sizes="(max-width: 768px) 10px, 20px"
+                />
+                  <div className={cn("absolute inset-0 bg-black/70 rounded-2xl flex items-center justify-center text-white text-sm  group-hover:flex", showCopied === tech.name ?"flex text-center": "hidden")}>
+                  {tech.name } SVG Copied!
+                </div>
+                {/* <p className="text-xs text-center text-muted-foreground font-medium truncate w-full">{tech.name}</p> */}
               </div>
             );
           })}
