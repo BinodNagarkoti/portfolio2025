@@ -9,14 +9,6 @@ import Image from 'next/image';
 import BlurText from "@/components/reactbits/TextAnimations/BlurText/BlurText";
 import PixelTransition from "@/components/reactbits/Animation/PixelTransition/PixelTransition";
 import Squares from "@/components/reactbits/Backgrounds/Squares/Squares";
-// Dynamically import P5Sketch (formerly AnimatedShape) with ssr: false
-const P5Sketch = dynamic(
-  () => import('@/components/common/P5Sketch'), // Updated path
-  { 
-    ssr: false,
-    loading: () => <div className="w-full h-[300px] md:h-[400px] flex justify-center items-center bg-muted/30"><p>Initializing 3D Sketch...</p></div>
-  }
-);
 
 const HeroSection = () => {
   return (
@@ -82,8 +74,6 @@ const HeroSection = () => {
                 </div>
             </div>
           </div>
-        </div>
-      </div>
     </section>
   );
 };

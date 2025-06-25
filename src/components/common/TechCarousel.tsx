@@ -1,7 +1,6 @@
 'use client';
 import { useState, useRef } from 'react';
 
-import { useState, useRef } from 'react';
 import {
   Code2Icon, DatabaseIcon, ServerCogIcon, CloudIcon, ContainerIcon, GitForkIcon,
   GithubIcon, ZapIcon, CpuIcon, PaletteIcon, GlobeIcon, ShieldCheckIcon, Settings2Icon,
