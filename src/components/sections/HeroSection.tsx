@@ -7,13 +7,22 @@ import { ArrowDownIcon, DownloadIcon } from 'lucide-react';
 import { personalInfo } from '@/lib/data';
 import Image from 'next/image';
 import BlurText from "@/components/reactbits/TextAnimations/BlurText/BlurText";
-import Squares from "@/components/reactbits/Backgrounds/Squares/Squares";
 import PixelTransition from "@/components/reactbits/Animation/PixelTransition/PixelTransition";
+import Squares from "@/components/reactbits/Backgrounds/Squares/Squares";
+// Dynamically import P5Sketch (formerly AnimatedShape) with ssr: false
+const P5Sketch = dynamic(
+  () => import('@/components/common/P5Sketch'), // Updated path
+  { 
+    ssr: false,
+    loading: () => <div className="w-full h-[300px] md:h-[400px] flex justify-center items-center bg-muted/30"><p>Initializing 3D Sketch...</p></div>
+  }
+);
 
 const HeroSection = () => {
   return (
-    <section id="home" className=" min-h-screen flex items-center justify-center overflow-hidden bg-background py-20 pt-32 md:pt-20">
-      {/* <Squares className="absolute inset-0 z-0 size-full" speed={0.5} squareSize={40} direction='diagonal' borderColor='hsl(var(--border))' hoverFillColor='hsl(var(--accent))' /> */}
+    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-white/10 to-primary/10 py-20 pt-32 md:pt-20">
+      {/* ✅ Background animation component */}
+      <Squares className="absolute inset-0 z-0 size-full" speed={0.5} squareSize={40} direction='diagonal' borderColor='#999' hoverFillColor='#222' />
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 z-10">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="text-center md:text-left animate-fade-in-up">
@@ -38,11 +47,7 @@ const HeroSection = () => {
             </div>
           </div>
           <div className="hidden md:flex items-center justify-center animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-            <div className="relative w-[350px] h-[350px] lg:w-[400px] lg:h-[400px] flex items-center justify-center">
-              {/* Orbiting Line */}
-              <div className="absolute w-full h-full rounded-full border-2 border-primary/20 animate-spin-slow" />
-              <div className="relative w-5/6 h-5/6 overflow-hidden rounded-[60%_40%_30%_70%/60%_30%_70%_40%] animate-blob">
-              <PixelTransition
+            <PixelTransition
               firstContent={
                 <div className="relative w-full h-full">
                 // {/* Image container that is also the blob, with image masked inside */}
@@ -53,13 +58,12 @@ const HeroSection = () => {
                     className="object-cover w-full h-full grayscale"
                     data-ai-hint="profile picture"
                     priority
-                    />
-                    {/* Inner shadow overlay to blend edges */}
-                    <div className="absolute inset-0 shadow-[inset_0_0_30px_20px_hsl(var(--background))]"></div>
-                  </div>
-                  }
-                secondContent={
-                  <div
+                  />
+                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_50%,hsl(var(--background)))]" />
+                </div>
+              }
+              secondContent={
+                <div
                   style={{
                     width: "100%",
                     height: "100%",

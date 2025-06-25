@@ -47,7 +47,7 @@ const Navbar = () => {
 
           <nav className="hidden md:flex space-x-2">
             {navItems.map((item) => (
-              <Button key={item.name} variant="ghost" asChild className="text-foreground hover:text-accent hover:bg-primary/10">
+              <Button key={item.name} variant="ghost" asChild className="text-foreground hover:text-accent hover:bg-accent/10">
                 <Link href={item.href}>{item.name}</Link>
               </Button>
             ))}
