@@ -47,7 +47,7 @@ const HeroSection = () => {
                     src="/me.png"
                     alt={personalInfo.name}
                     fill
-                    className="object-cover w-full h-full"
+                    className="object-cover w-full h-full grayscale"
                     data-ai-hint="profile picture"
                     priority
                 />
