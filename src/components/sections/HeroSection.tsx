@@ -40,8 +40,8 @@ const HeroSection = () => {
             <div className="relative w-[300px] h-[300px] lg:w-[350px] lg:h-[350px] group">
               <div className="absolute inset-0 bg-card rounded-lg shadow-lg p-2">
                  <Image
-                    src="https://placehold.co/600x400.png"
-                    alt="Developer illustration"
+                    src="/me.png"
+                     alt={personalInfo.name}
                     fill
                     className="object-cover rounded-md"
                     data-ai-hint="developer illustration"

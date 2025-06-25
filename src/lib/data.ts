@@ -42,67 +42,83 @@ export interface Project {
 
 export const projectsData: Project[] = [
   {
-    id: 'jimmy-blog',
-    title: 'Jimmy/blog',
-    description: 'A personal blog platform.',
+    id: 'investfly',
+    title: 'Investfly',
+    description: 'Algorithmic trading platform for stocks, options, and futures with a stock market game.',
+    longDescription: 'Designed and developed a comprehensive web application for Investfly, an algorithmic trading platform. The platform supports trading in stocks, options, and futures, and includes an engaging stock market game. Key responsibilities included frontend development using ReactJS and seamless integration with REST APIs.',
     technologies: ['ReactJS', 'REST API', 'JavaScript'],
-    imageUrl: 'https://placehold.co/600x400.png',
-    imageHint: 'blog layout',
-    tags: ['web', 'frontend', 'dev'],
-    cardStyle: 'light',
+    imageUrl: 'https://www.investfly.com/images/logos/logo-white.png',
+    imageHint: 'company logo',
+    liveLink: '#',
+    githubLink: '#',
+    tags: ['FinTech', 'Trading Platform', 'Frontend']
   },
   {
-    id: 'go-todo',
-    title: 'GO TODO',
-    description: 'A to-do list application built with Go.',
-    technologies: ['Go', 'CLI', 'Backend'],
-    imageUrl: 'https://placehold.co/600x400.png',
-    imageHint: 'code snippet',
-    tags: ['backend', 'go', 'tool'],
-    cardStyle: 'dark',
+    id: 'nbimf',
+    title: 'nbimf.com',
+    description: 'Platform for civil engineering students: blogs, BIM resources.',
+    longDescription: 'Developed nbimf.com, a platform tailored for civil engineering students. It features blogs related to civil engineering and Building Information Modeling (BIM). The project involved building a customer-facing site with NextJS, an admin panel with ReactJS, and a backend using ExpressJS with MongoDB.',
+    technologies: ['NextJS', 'ReactJS', 'NodeJS', 'ExpressJS', 'MongoDB', 'JavaScript'],
+    imageUrl: 'https://nbimf.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FNBIMF-logo.bbba72d3.png&w=128&q=75',
+    imageHint: 'company logo',
+    tags: ['Civil Engineering', 'BIM', 'Full Stack', 'Content Platform']
   },
   {
-    id: 'browse-base',
-    title: 'BrowseBase',
-    description: 'A browser-based database interface.',
-    technologies: ['NextJS', 'ReactJS', 'NodeJS'],
-    imageUrl: 'https://placehold.co/600x400.png',
-    imageHint: 'dashboard ui',
-    tags: ['database', 'frontend', 'tool'],
-    cardStyle: 'light',
+    id: 'forefronteng',
+    title: 'forefronteng.com',
+    description: 'Portfolio with blogs, project showcases, e-commerce for civil software, and training booking.',
+    longDescription: 'Led the design and development of forefronteng.com, a multi-functional portfolio site. Features include blogs, project showcases, an e-commerce section for civil engineering software sales, and a training booking application. The tech stack comprised NextJS for the frontend, ReactJS for the admin panel, and an ExpressJS backend with MySQL.',
+    technologies: ['NextJS', 'ReactJS', 'NodeJS', 'ExpressJS', 'MySQL', 'JavaScript', 'E-commerce'],
+    imageUrl: 'https://forefronteng.com/_next/image?url=%2Fimg%2Flogo.png&w=256&q=75',
+    imageHint: 'company logo',
+    liveLink: '#',
+    tags: ['Portfolio', 'E-commerce', 'Full Stack', 'Civil Engineering Software']
+  },
+  {
+    id: 'thedreamshouse',
+    title: 'thedreamshouse.com',
+    description: 'Real estate platform (currently under development).',
+    longDescription: 'Currently spearheading the development of thedreamshouse.com, a real estate platform. This ongoing project aims to provide a modern and user-friendly experience for property searching and listing. (Details will be updated as development progresses).',
+    technologies: ['NextJS', 'ReactJS', 'NodeJS', 'ExpressJS', 'PostgreSQL'],
+    imageUrl: 'https://thedreamshouse.com/_next/image?url=%2Fthedreamshousepng-no-bg.png&w=1920&q=75',
+    imageHint: 'company logo',
+    tags: ['Real Estate', 'Full Stack', 'In Development']
   },
 ];
 
 export const personalProjectsData: Project[] = [
-   {
-    id: 'navelonge',
-    title: 'Navelonge',
-    description: 'A tool for something.',
+  {
+    id: 'ai-movie-suggestion',
+    title: 'AI Movie Suggester',
+    description: 'Get personalized movie recommendations based on your mood and preferences, powered by AI.',
     technologies: ['NextJS', 'Supabase', 'TailwindCSS', 'Genkit AI'],
     imageUrl: 'https://placehold.co/600x400.png',
-    imageHint: 'abstract tech',
-    tags: ['AI', 'Utility Tools', 'Next.js'],
-    cardStyle: 'light',
+    imageHint: 'movie cinema',
+    liveLink: '#',
+    githubLink: '#',
+    tags: ['AI', 'Entertainment', 'Next.js', 'Supabase']
   },
   {
-    id: 'gc-search',
-    title: 'GC Search',
-    description: 'A specialized search engine.',
-    technologies: ['NextJS', 'Supabase', 'TailwindCSS'],
+    id: 'ai-chat-bot',
+    title: 'Intelligent AI Chat',
+    description: 'A conversational AI chat application capable of understanding context and providing helpful responses.',
+    technologies: ['NextJS', 'Supabase', 'TailwindCSS', 'Genkit AI'],
     imageUrl: 'https://placehold.co/600x400.png',
-    imageHint: 'search bar',
-    tags: ['Search', 'Tool', 'Next.js'],
-    cardStyle: 'light',
+    imageHint: 'chat bubble',
+    liveLink: '#',
+    githubLink: '#',
+    tags: ['AI', 'Chatbot', 'Next.js', 'NLP']
   },
   {
-    id: 'ai-chat',
-    title: 'AI Chat',
-    description: 'A conversational AI application.',
-    technologies: ['NextJS', 'Genkit AI'],
+    id: 'ai-tools-suite',
+    title: 'AI-Powered Utilities',
+    description: 'A suite of smart tools including math solvers, color pickers, measurement converters, enhanced with AI capabilities.',
+    technologies: ['NextJS', 'Supabase', 'TailwindCSS', 'Genkit AI'],
     imageUrl: 'https://placehold.co/600x400.png',
-    imageHint: 'chat bubbles',
-    tags: ['AI', 'Chatbot', 'Next.js'],
-    cardStyle: 'light',
+    imageHint: 'tools wrench',
+    liveLink: '#',
+    githubLink: '#',
+    tags: ['AI', 'Utility Tools', 'Next.js', 'Productivity']
   }
 ];
 
@@ -205,12 +221,12 @@ export const blogPosts = [
 ];
 
 export const personalInfo = {
-  name: 'Jimmy',
-  title: 'Full Stack Developer',
-  email: 'jimmy@example.com',
-  phone: '+1234567890',
+  name: 'Binod Nagarkoti',
+  title: 'Frontend & Full Stack Developer',
+  email: 'binod1365@gmail.com',
+  phone: '+9779803135946',
   location: 'Kathmandu, Nepal',
-  github: 'https://github.com/yourusername',
-  linkedin: 'https://linkedin.com/in/yourusername',
-  cvLink: '/jimmy-cv.pdf' 
+  github: 'https://github.com/BinodNagarkoti',
+  linkedin: 'https://linkedin.com/in/binod-nagarkoti-496245128?utm_source=share&utm_campaign=share_via&utm_medium=android_app',
+  cvLink: '/binod_nagarkoti.pdf' 
 };
