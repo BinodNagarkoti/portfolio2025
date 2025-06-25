@@ -24,11 +24,8 @@ const AboutSection = () => {
           </CardHeader>
           <CardContent className="space-y-4 text-muted-foreground">
             <p>
-              I am a Bachelor of Information Technology (BIT) graduate from the College of Information Technology and Engineering (CITE), Purvanchal University (PU), Nepal. With a deep passion for web application development, I specialize in leveraging the JavaScript MERN stack (MongoDB, Express.js, React.js, Node.js) and TypeScript to build robust and scalable solutions.
-            </p>
-            <p>
-              My experience spans across designing and developing diverse applications, from algorithmic trading platforms to e-commerce sites and content management systems. I thrive in dynamic environments, continuously exploring new technologies to deliver cutting-edge products.
-            </p>
+            I am a full-stack developer who focuses on the NodeJS(ExpressJS) backend and is familiar with core technologies such as Postgres, MySQL, NoSQL(MongoDB) Redis and can build high-performance, maintainable server-side architectures. At the same time, I have good front-end development capabilities and can build highly interactive web applications using modern frameworks such as ReactJS, NextJs, and Vite. I focus on product experience and design details, and am committed to creating products that combine technical depth and user value.</p>
+           
           </CardContent>
         </Card>
         <Card className="bg-card/50 backdrop-blur-sm">
