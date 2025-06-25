@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { CodeXmlIcon, MenuIcon, XIcon } from 'lucide-react';
+import { CodeXmlIcon, MenuIcon } from 'lucide-react';
 import { useState } from 'react';
 import { personalInfo } from '@/lib/data';
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
@@ -20,9 +20,10 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   return (
     <header className="py-4">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center border-b border-border/40 pb-4">
         <Link href="#home" className="flex items-center gap-2 text-2xl font-bold text-primary font-headline">
           <CodeXmlIcon className="h-8 w-8 text-accent" />
+          <span className="hidden sm:inline">{personalInfo.name}</span>
         </Link>
         
         {/* Desktop Nav */}

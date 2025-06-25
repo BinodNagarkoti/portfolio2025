@@ -13,9 +13,15 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
   const isDark = project.cardStyle === 'dark';
 
   return (
-    <Card className={cn("group flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1", isDark ? "bg-primary text-primary-foreground" : "bg-card")}>
+    <Card className={cn(
+      "group flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1", 
+      isDark ? "bg-primary text-primary-foreground" : "bg-card"
+    )}>
       <CardHeader className="p-0 relative">
-        <div className={cn("aspect-video overflow-hidden relative", isDark ? 'bg-secondary' : 'bg-muted/30')}>
+        <div className={cn(
+          "aspect-video overflow-hidden relative", 
+          isDark ? 'bg-secondary/20' : 'bg-muted/30'
+        )}>
           <Image
             src={project.imageUrl}
             alt={project.title}
@@ -30,16 +36,17 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
         <CardTitle className="text-lg font-bold mb-1 font-headline">
           {project.title}
         </CardTitle>
-        <CardDescription className={cn(isDark ? 'text-primary-foreground/70' : 'text-muted-foreground')}>
+        <CardDescription className={cn(isDark ? 'text-primary-foreground/80' : 'text-muted-foreground')}>
           {project.description}
         </CardDescription>
       </CardContent>
-      <CardFooter className="p-4">
+      <CardFooter className="p-4 pt-0">
         <div className="flex flex-wrap gap-2">
           {project.tags.map((tag) => ( 
             <Badge 
               key={tag} 
               variant={isDark ? 'secondary' : 'outline'}
+              className={cn(isDark && 'bg-primary-foreground/10 text-primary-foreground/90')}
             >
               {tag}
             </Badge>

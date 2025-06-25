@@ -18,7 +18,7 @@ const AboutSection = () => {
   return (
     <SectionWrapper id="about" title="About Me" subtitle="">
       <div className="grid md:grid-cols-2 gap-8 items-start">
-        <Card>
+        <Card className="bg-card/50 backdrop-blur-sm">
           <CardHeader>
             <CardTitle>Professional Background</CardTitle>
           </CardHeader>
@@ -31,7 +31,7 @@ const AboutSection = () => {
             </p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-card/50 backdrop-blur-sm">
           <CardHeader>
             <CardTitle>Technical Skills</CardTitle>
           </CardHeader>
