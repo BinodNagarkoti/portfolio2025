@@ -28,8 +28,8 @@ const HeroSection = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 z-10">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="text-center md:text-left animate-fade-in-up">
-          <BlurText component={'span'} text='Hello, I&apos;m' className="text-lg font-semibold uppercase tracking-wider font-headline text-primary" />
-            <BlurText component='h1' text={personalInfo.name} className="mt-2 text-5xl md:text-6xl lg:text-7xl font-bold font-headline text-foreground" />
+          <BlurText component={'span'} text='Hello, I&apos;m' className="hover:text-accent/80 transition-colors text-lg font-semibold uppercase tracking-wider font-headline text-primary" />
+            <BlurText component='h1' text={personalInfo.name} className="hover:text-accent/80 transition-colors mt-2 text-5xl md:text-6xl lg:text-7xl font-bold font-headline text-foreground" />
             <p className="mt-4 text-xl md:text-2xl text-foreground">
               A passionate <span className="text-primary font-semibold">{personalInfo.title}</span> specializing in creating modern and performant web applications.
             </p>
@@ -89,10 +89,3 @@ const HeroSection = () => {
 };
 
 export default HeroSection;
-
-
-// HTML,CSS, 
-// Javascript, React, JQuery,Nodejs,Expressjs, MongoDB, Mongoose, MongoDB Atlas,
-// Tailwindcss, Shadcn UI, Git, Github, Heroku, Vercel, Nextjs, TypeScript,
-// Redux, Firebase, Zod, Khalti, Stripe, AWS, Docker, Supabase, Cpanel, Wordpress, WIX, Canva, Figma,
-// Axios, React Router DOM,React Error Boundary, formik,React Router, React Hook Form,
