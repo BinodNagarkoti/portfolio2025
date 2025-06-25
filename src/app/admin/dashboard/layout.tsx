@@ -1,6 +1,8 @@
+
 'use client';
 
 import type { ReactNode } from 'react';
+import { useState, useEffect } from 'react';
 import {
   SidebarProvider,
   Sidebar,
@@ -29,8 +31,8 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { personalInfo } from '@/lib/data'; // For name display, consider fetching from DB later
+import { createSupabaseBrowserClient } from '@/lib/supabase/client';
+import { staticPersonalInfo } from '@/lib/data';
 
 const navItems = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboardIcon },
@@ -60,6 +62,18 @@ const navItems = [
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const [userName, setUserName] = useState<string>(staticPersonalInfo.name.split(' ')[0]);
+
+  useEffect(() => {
+    const supabase = createSupabaseBrowserClient();
+    const fetchName = async () => {
+      const { data } = await supabase.from('personal_info').select('name').limit(1).single();
+      if (data?.name) {
+        setUserName(data.name.split(' ')[0]);
+      }
+    };
+    fetchName();
+  }, []);
 
   return (
     <SidebarProvider defaultOpen>
@@ -68,7 +82,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           <Link href="/admin/dashboard" className="flex items-center gap-2 text-lg font-semibold font-headline text-sidebar-primary">
             <CodeXmlIcon className="h-7 w-7" />
              <span className="group-data-[collapsible=icon]:hidden">
-              {personalInfo.name.split(' ')[0]} Admin
+              {userName} Admin
             </span>
           </Link>
         </SidebarHeader>
