@@ -76,6 +76,55 @@ const Navbar = () => {
     }
   };
 
+  const getContentClasses = () => {
+    switch (navStyle) {
+      case 'stage1': // Largest
+        return {
+          logo: 'h-9 w-9 text-sm',
+          navButton: 'text-sm px-3 py-2 h-9',
+          iconButton: 'h-9 w-9',
+          navWrapper: 'space-x-1',
+        };
+      case 'stage2':
+        return {
+          logo: 'h-[34px] w-[34px] text-sm',
+          navButton: 'text-sm px-2.5 py-1.5 h-8',
+          iconButton: 'h-[34px] w-[34px]',
+          navWrapper: 'space-x-1',
+        };
+      case 'stage3':
+        return {
+          logo: 'h-8 w-8 text-xs',
+          navButton: 'text-xs px-2 py-1 h-[30px]',
+          iconButton: 'h-8 w-8',
+          navWrapper: 'space-x-0.5',
+        };
+      case 'stage4':
+        return {
+          logo: 'h-[30px] w-[30px] text-xs',
+          navButton: 'text-xs px-1.5 py-1 h-7',
+          iconButton: 'h-[30px] w-[30px]',
+          navWrapper: 'space-x-0.5',
+        };
+      case 'stage5': // Smallest
+        return {
+          logo: 'h-7 w-7 text-[10px]',
+          navButton: 'text-[10px] px-1.5 py-0.5 h-6',
+          iconButton: 'h-7 w-7',
+          navWrapper: 'space-x-0',
+        };
+      default:
+        return {
+          logo: 'h-9 w-9 text-sm',
+          navButton: 'text-sm px-3 py-2 h-9',
+          iconButton: 'h-9 w-9',
+          navWrapper: 'space-x-1',
+        };
+    }
+  };
+
+  const contentClasses = getContentClasses();
+
   return (
     <>
       {/* Desktop Nav */}
@@ -87,17 +136,23 @@ const Navbar = () => {
       >
         <Link
           href="#home"
-          className="relative h-9 w-9 flex items-center justify-center text-center overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-[0_0_16px_4px_rgba(var(--accent-rgb),0.5)] ring-1 ring-border/50 bg-gradient-to-br from-primary/10 to-accent/10 hover:rotate-12"
+          className={cn(
+            "relative flex items-center justify-center text-center overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-[0_0_16px_4px_rgba(var(--accent-rgb),0.5)] ring-1 ring-border/50 bg-gradient-to-br from-primary/10 to-accent/10 hover:rotate-12",
+            contentClasses.logo
+            )}
         >
-          <span className="font-bold text-sm text-foreground">BN</span>
+          <span className="font-bold text-foreground">BN</span>
         </Link>
-        <div className="flex items-center space-x-1">
+        <div className={cn("flex items-center", contentClasses.navWrapper)}>
           {navItems.map((item) => (
             <Button
               key={item.name}
               variant="ghost"
               asChild
-              className="text-sm font-medium transition-colors duration-300 text-foreground"
+              className={cn(
+                "font-medium transition-all duration-300 text-foreground",
+                contentClasses.navButton
+                )}
             >
               <Link href={item.href}>{item.name}</Link>
             </Button>
@@ -106,7 +161,10 @@ const Navbar = () => {
         <Button
           variant="ghost"
           size="icon"
-          className="h-9 w-9 rounded-full transition-all duration-300 hover:scale-110"
+          className={cn(
+            "rounded-full transition-all duration-300 hover:scale-110",
+            contentClasses.iconButton
+            )}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
