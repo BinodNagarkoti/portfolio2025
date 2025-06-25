@@ -133,7 +133,7 @@ export async function upsertProject(formData: FormData): Promise<{ data: Project
 export async function deleteProject(id: string): Promise<{ error: string | null }> {
     const supabase = createSupabaseServerClient();
 
-    // Optional: Also delete image from storage
+    // Also delete image from storage
     const { data: projectData, error: fetchError } = await supabase.from('projects').select('cover_image_url').eq('id', id).single();
     if (fetchError) {
         console.error('Could not fetch project to delete image:', fetchError);
