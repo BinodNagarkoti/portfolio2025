@@ -9,21 +9,11 @@ import dynamic from 'next/dynamic';
 import { Card } from '../ui/card';
 import Image from 'next/image';
 import BlurText from "@/components/reactbits/TextAnimations/BlurText/BlurText";
-import PixelTransition from "@/components/reactbits/Animation/PixelTransition/PixelTransition";
 import Squares from "@/components/reactbits/Backgrounds/Squares/Squares";
-// Dynamically import P5Sketch (formerly AnimatedShape) with ssr: false
-const P5Sketch = dynamic(
-  () => import('@/components/common/P5Sketch'), // Updated path
-  { 
-    ssr: false,
-    loading: () => <div className="w-full h-[300px] md:h-[400px] flex justify-center items-center bg-muted/30"><p>Initializing 3D Sketch...</p></div>
-  }
-);
 
 const HeroSection = () => {
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-white/10 to-primary/10 py-20 pt-32 md:pt-20">
-      {/* ✅ Background animation component */}
       <Squares className="absolute inset-0 z-0 size-full" speed={0.5} squareSize={40} direction='diagonal' borderColor='#999' hoverFillColor='#222' />
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 z-10">
         <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -49,38 +39,26 @@ const HeroSection = () => {
             </div>
           </div>
           <div className="hidden md:flex items-center justify-center animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-            <PixelTransition
-              firstContent={
+             <div className="relative w-[350px] h-[350px] lg:w-[400px] lg:h-[400px] flex items-center justify-center">
+                {/* Orbiting Line */}
+                <div className="absolute w-full h-full rounded-full border-2 border-white/50 animate-spin-slow" />
+                
+                {/* Blue Blob Shape */}
+                <div className="absolute w-5/6 h-5/6 bg-primary/80 rounded-[60%_40%_30%_70%/60%_30%_70%_40%] animate-blob" />
+
+                {/* Profile Image with its own glow */}
                 <div className="relative w-full h-full">
+                  <div className="absolute inset-0 rounded-full bg-primary/30 blur-2xl animate-pulse" />
                   <Image
                     src="/me.png"
                     alt={personalInfo.name}
                     fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="object-cover filter grayscale"
+                    className="object-contain drop-shadow-2xl"
                     data-ai-hint="profile picture"
                     priority
                   />
-                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_50%,hsl(var(--background)))]" />
                 </div>
-              }
-              secondContent={
-                <div
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    display: "grid",
-                    placeItems: "center",
-                    backgroundColor: "#111"
-                  }}
-                >
-                  <p style={{ fontWeight: 900, fontSize: "3rem", color: "#ffffff" }}>Hire Me!</p>
-                </div>
-              }
-              pixelColor='#ffffff'
-              animationStepDuration={0.4}
-              className="custom-pixel-card"
-            />
+              </div>
           </div>
         </div>
       </div>
@@ -89,10 +67,3 @@ const HeroSection = () => {
 };
 
 export default HeroSection;
-
-
-// HTML,CSS, 
-// Javascript, React, JQuery,Nodejs,Expressjs, MongoDB, Mongoose, MongoDB Atlas,
-// Tailwindcss, Shadcn UI, Git, Github, Heroku, Vercel, Nextjs, TypeScript,
-// Redux, Firebase, Zod, Khalti, Stripe, AWS, Docker, Supabase, Cpanel, Wordpress, WIX, Canva, Figma,
-// Axios, React Router DOM,React Error Boundary, formik,React Router, React Hook Form,
