@@ -62,75 +62,26 @@ const Navbar = () => {
   const getNavClasses = () => {
     switch (navStyle) {
       case 'stage1':
-        return 'w-[90%] px-6 h-16'; // Largest
+        return 'w-[90%] px-6'; // Largest
       case 'stage2':
-        return 'w-[82.5%] px-5 h-[3.75rem]';
+        return 'w-[82.5%] px-5';
       case 'stage3':
-        return 'w-[75%] px-4 h-14';
+        return 'w-[75%] px-4';
       case 'stage4':
-        return 'w-[67.5%] px-3 h-[3.25rem]';
+        return 'w-[67.5%] px-3';
       case 'stage5':
-        return 'w-[60%] px-2 h-12'; // Smallest
+        return 'w-[60%] px-2'; // Smallest
       default:
-        return 'w-[90%] px-6 h-16';
+        return 'w-[90%] px-6';
     }
   };
-
-  const getContentClasses = () => {
-    switch (navStyle) {
-      case 'stage1': // Largest
-        return {
-          logo: 'h-9 w-9 text-sm',
-          navButton: 'text-sm px-3 py-2 h-9',
-          iconButton: 'h-9 w-9',
-          navWrapper: 'space-x-1',
-        };
-      case 'stage2':
-        return {
-          logo: 'h-[34px] w-[34px] text-sm',
-          navButton: 'text-sm px-2.5 py-1.5 h-8',
-          iconButton: 'h-[34px] w-[34px]',
-          navWrapper: 'space-x-1',
-        };
-      case 'stage3':
-        return {
-          logo: 'h-8 w-8 text-xs',
-          navButton: 'text-xs px-2 py-1 h-[30px]',
-          iconButton: 'h-8 w-8',
-          navWrapper: 'space-x-0.5',
-        };
-      case 'stage4':
-        return {
-          logo: 'h-[30px] w-[30px] text-xs',
-          navButton: 'text-xs px-1.5 py-1 h-7',
-          iconButton: 'h-[30px] w-[30px]',
-          navWrapper: 'space-x-0.5',
-        };
-      case 'stage5': // Smallest
-        return {
-          logo: 'h-7 w-7 text-[10px]',
-          navButton: 'text-[10px] px-1.5 py-0.5 h-6',
-          iconButton: 'h-7 w-7',
-          navWrapper: 'space-x-0',
-        };
-      default:
-        return {
-          logo: 'h-9 w-9 text-sm',
-          navButton: 'text-sm px-3 py-2 h-9',
-          iconButton: 'h-9 w-9',
-          navWrapper: 'space-x-1',
-        };
-    }
-  };
-
-  const contentClasses = getContentClasses();
 
   return (
     <>
       {/* Desktop Nav */}
       <nav
         className={cn(
-          'hidden md:flex fixed top-4 left-1/2 -translate-x-1/2 z-40 items-center justify-between rounded-full bg-background/50 backdrop-blur-xl border border-border/20 shadow-lg transition-all duration-500 ease-in-out',
+          'hidden md:flex fixed top-4 left-1/2 -translate-x-1/2 z-40 items-center justify-between rounded-full bg-background/50 backdrop-blur-xl border border-border/20 shadow-lg transition-all duration-500 ease-in-out h-16',
           getNavClasses()
         )}
       >
@@ -138,20 +89,20 @@ const Navbar = () => {
           href="#home"
           className={cn(
             "relative flex items-center justify-center text-center overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-[0_0_16px_4px_rgba(var(--accent-rgb),0.5)] ring-1 ring-border/50 bg-gradient-to-br from-primary/10 to-accent/10 hover:rotate-12",
-            contentClasses.logo
+            "h-9 w-9 text-sm"
             )}
         >
           <span className="font-bold text-foreground">BN</span>
         </Link>
-        <div className={cn("flex items-center", contentClasses.navWrapper)}>
+        <div className={cn("flex items-center", "space-x-1")}>
           {navItems.map((item) => (
             <Button
               key={item.name}
               variant="ghost"
               asChild
               className={cn(
-                "font-medium transition-all duration-300 text-foreground",
-                contentClasses.navButton
+                "font-medium transition-colors duration-300 text-foreground",
+                "text-sm px-3 py-2 h-9"
                 )}
             >
               <Link href={item.href}>{item.name}</Link>
@@ -163,7 +114,7 @@ const Navbar = () => {
           size="icon"
           className={cn(
             "rounded-full transition-all duration-300 hover:scale-110",
-            contentClasses.iconButton
+            "h-9 w-9"
             )}
         >
           <svg
