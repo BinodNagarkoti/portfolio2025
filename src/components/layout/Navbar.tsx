@@ -62,17 +62,17 @@ const Navbar = () => {
   const getNavClasses = () => {
     switch (navStyle) {
       case 'stage1':
-        return 'max-w-xl px-6 h-16'; // Largest
+        return 'w-[90%] px-6 h-16'; // Largest
       case 'stage2':
-        return 'max-w-lg px-5 h-[3.75rem]'; // Large
+        return 'w-[82.5%] px-5 h-[3.75rem]';
       case 'stage3':
-        return 'max-w-md px-4 h-14'; // Medium
+        return 'w-[75%] px-4 h-14';
       case 'stage4':
-        return 'max-w-sm px-3 h-[3.25rem]'; // Small
+        return 'w-[67.5%] px-3 h-[3.25rem]';
       case 'stage5':
-        return 'max-w-xs px-2 h-12'; // Smallest
+        return 'w-[60%] px-2 h-12'; // Smallest
       default:
-        return 'max-w-xl px-6 h-16';
+        return 'w-[90%] px-6 h-16';
     }
   };
 
