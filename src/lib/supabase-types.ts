@@ -1,3 +1,4 @@
+
 /**
  * This file contains TypeScript types for your Supabase tables.
  * You should manually update these types to match your Supabase schema.
@@ -80,10 +81,14 @@ export interface Skill {
   id: string;
   skill_category_id: string; // Foreign key to skill_categories
   name: string; // e.g., "ReactJS"
-  level?: string | null; // e.g., "Expert", "Intermediate"
+  level?: 'Basic' | 'Intermediate' | 'Expert' | null; // e.g., "Expert", "Intermediate"
   created_at?: string;
   updated_at?: string;
 }
+
+export type SkillCategoryWithSkills = SkillCategory & {
+  skills: Skill[];
+};
 
 export type ProjectType = 'personal' | 'professional_freelance' | 'professional_employment';
 

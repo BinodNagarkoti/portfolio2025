@@ -1,9 +1,9 @@
+
 import SectionWrapper from '@/components/common/SectionWrapper';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { skillsData, type Skill } from '@/lib/data';
-
-const mainSkills: Skill[] = skillsData.find(cat => cat.name === 'Frontend Development')?.skills.slice(0, 4) || [];
+import { getSkillCategoriesWithSkills } from '@/lib/actions';
+import type { Skill } from '@/lib/supabase-types';
 
 const skillToProgress = (skill: Skill) => {
   switch (skill.level) {
@@ -14,7 +14,11 @@ const skillToProgress = (skill: Skill) => {
   }
 }
 
-const AboutSection = () => {
+const AboutSection = async () => {
+  const { data: categories } = await getSkillCategoriesWithSkills();
+  const frontendCategory = categories?.find(cat => cat.name === 'Frontend Development');
+  const mainSkills = frontendCategory?.skills.slice(0, 4) || [];
+
   return (
     <SectionWrapper id="about" title="About Me" subtitle="">
       <div className="grid md:grid-cols-2 gap-8 items-start">
@@ -33,15 +37,17 @@ const AboutSection = () => {
             <CardTitle>Technical Skills</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            {mainSkills.map(skill => (
-              <div key={skill.name}>
+            {mainSkills.length > 0 ? mainSkills.map(skill => (
+              <div key={skill.id}>
                 <div className="flex justify-between items-center mb-1">
                   <span className="font-medium text-sm text-foreground">{skill.name}</span>
                   <span className="text-xs text-muted-foreground">{skillToProgress(skill)}%</span>
                 </div>
                 <Progress value={skillToProgress(skill)} />
               </div>
-            ))}
+            )) : (
+              <p className="text-sm text-muted-foreground">No 'Frontend Development' skills found. Add them in the admin panel.</p>
+            )}
           </CardContent>
         </Card>
       </div>

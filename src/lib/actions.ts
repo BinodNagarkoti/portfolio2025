@@ -1,8 +1,9 @@
+
 'use server'
 
 import { createSupabaseServerClient } from '@/lib/supabase/server'
 import { unstable_noStore as noStore, revalidatePath } from 'next/cache';
-import type { PersonalInfo, Project } from './supabase-types';
+import type { PersonalInfo, Project, SkillCategoryWithSkills, Skill, SkillCategory } from './supabase-types';
 import { z } from 'zod';
 
 export async function getPersonalInfo(): Promise<PersonalInfo | null> {
@@ -155,5 +156,79 @@ export async function deleteProject(id: string): Promise<{ error: string | null 
     revalidatePath('/');
     revalidatePath('/admin/dashboard/projects');
 
+    return { error: null };
+}
+
+// SKILLS ACTIONS
+export async function getSkillCategoriesWithSkills(): Promise<{ data: SkillCategoryWithSkills[] | null, error: Error | null }> {
+    noStore();
+    const supabase = createSupabaseServerClient();
+    const { data, error } = await supabase
+        .from('skill_categories')
+        .select('*, skills (*, skill_categories (name))')
+        .order('name', { ascending: true });
+
+    return { data, error };
+}
+
+
+const SkillCategorySchema = z.object({
+    id: z.string().optional(),
+    name: z.string().min(1, 'Name is required'),
+});
+
+export async function upsertSkillCategory(categoryData: { id?: string, name: string }): Promise<{ data: SkillCategory | null, error: string | null }> {
+    const validatedFields = SkillCategorySchema.safeParse(categoryData);
+    if (!validatedFields.success) {
+        return { data: null, error: 'Invalid category data.' };
+    }
+    
+    const supabase = createSupabaseServerClient();
+    const { data, error } = await supabase.from('skill_categories').upsert(validatedFields.data).select().single();
+    
+    if (error) return { data: null, error: error.message };
+    revalidatePath('/admin/dashboard/skills');
+    revalidatePath('/');
+    return { data, error: null };
+}
+
+export async function deleteSkillCategory(id: string): Promise<{ error: string | null }> {
+    const supabase = createSupabaseServerClient();
+    const { error } = await supabase.from('skill_categories').delete().match({ id });
+    if (error) return { error: error.message };
+    revalidatePath('/admin/dashboard/skills');
+    revalidatePath('/');
+    return { error: null };
+}
+
+
+const SkillSchema = z.object({
+    id: z.string().optional(),
+    name: z.string().min(1, 'Name is required'),
+    level: z.string().nullable(),
+    skill_category_id: z.string(),
+});
+
+export async function upsertSkill(skillData: { id?: string, name: string, level: string | null, skill_category_id: string }): Promise<{ data: Skill | null, error: string | null }> {
+    const validatedFields = SkillSchema.safeParse(skillData);
+    if (!validatedFields.success) {
+        return { data: null, error: 'Invalid skill data.' };
+    }
+
+    const supabase = createSupabaseServerClient();
+    const { data, error } = await supabase.from('skills').upsert(validatedFields.data).select().single();
+
+    if (error) return { data: null, error: error.message };
+    revalidatePath('/admin/dashboard/skills');
+    revalidatePath('/');
+    return { data, error: null };
+}
+
+export async function deleteSkill(id: string): Promise<{ error: string | null }> {
+    const supabase = createSupabaseServerClient();
+    const { error } = await supabase.from('skills').delete().match({ id });
+    if (error) return { error: error.message };
+    revalidatePath('/admin/dashboard/skills');
+    revalidatePath('/');
     return { error: null };
 }
