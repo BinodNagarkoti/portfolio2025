@@ -26,7 +26,7 @@ export default function SkillsAdminPage() {
     setIsLoading(true);
     const result = await getSkillCategoriesWithSkills();
     if (result.error) {
-      toast({ variant: 'destructive', title: 'Error fetching skills', description: result.error.message });
+      toast({ variant: 'destructive', title: 'Error fetching skills', description: result.error });
     } else if (result.data) {
       setCategories(result.data);
     }

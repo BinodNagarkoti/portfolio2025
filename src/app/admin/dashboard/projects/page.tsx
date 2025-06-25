@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
@@ -24,7 +25,7 @@ export default function ProjectsAdminPage() {
     setIsLoading(true);
     const result = await getProjectsForAdmin();
     if (result.error) {
-      toast({ variant: 'destructive', title: 'Error fetching projects', description: result.error.message });
+      toast({ variant: 'destructive', title: 'Error fetching projects', description: result.error });
     } else if (result.data) {
       setProjects(result.data);
     }

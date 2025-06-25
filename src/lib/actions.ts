@@ -55,14 +55,19 @@ export async function getProjects(): Promise<{ data: Project[] | null, error: st
   return { data, error: null };
 }
 
-export async function getProjectsForAdmin(): Promise<{ data: Project[] | null, error: Error | null }> {
+export async function getProjectsForAdmin(): Promise<{ data: Project[] | null, error: string | null }> {
     const supabase = createSupabaseServerClient();
     const { data, error } = await supabase
         .from('projects')
         .select('*')
         .order('created_at', { ascending: false });
 
-    return { data, error };
+    if (error) {
+        console.error('Database Error: Failed to Fetch Projects for Admin.', error);
+        return { data: null, error: error.message };
+    }
+
+    return { data, error: null };
 }
 
 export async function upsertProject(formData: FormData): Promise<{ data: Project | null, error: string | null }> {
@@ -160,7 +165,7 @@ export async function deleteProject(id: string): Promise<{ error: string | null 
 }
 
 // SKILLS ACTIONS
-export async function getSkillCategoriesWithSkills(): Promise<{ data: SkillCategoryWithSkills[] | null, error: Error | null }> {
+export async function getSkillCategoriesWithSkills(): Promise<{ data: SkillCategoryWithSkills[] | null, error: string | null }> {
     noStore();
     const supabase = createSupabaseServerClient();
     const { data, error } = await supabase
@@ -168,7 +173,12 @@ export async function getSkillCategoriesWithSkills(): Promise<{ data: SkillCateg
         .select('*, skills (*, skill_categories (name))')
         .order('name', { ascending: true });
 
-    return { data, error };
+    if (error) {
+        console.error('Database Error: Failed to Fetch Skill Categories.', error);
+        return { data: null, error: error.message };
+    }
+
+    return { data, error: null };
 }
 
 

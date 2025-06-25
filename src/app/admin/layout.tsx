@@ -10,11 +10,7 @@ export default function AdminLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body className="font-body antialiased bg-background text-foreground">
-        {children}
-      </body>
-    </html>
-  );
+  // This layout is nested within the root layout, so it should not contain <html> or <body> tags.
+  // It simply passes its children through to the next level.
+  return <>{children}</>;
 }
