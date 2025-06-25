@@ -1,55 +1,15 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
-import Squares from '@/components/reactbits/Backgrounds/Squares/Squares';
-import { getPersonalInfo } from '@/lib/actions';
-import { staticPersonalInfo } from '@/lib/data';
-import { headers } from 'next/headers';
 
-export async function generateMetadata(): Promise<Metadata> {
-  // This metadata will apply to public pages. Admin pages have their own.
-  const personalInfo = await getPersonalInfo();
-  const info = personalInfo ?? staticPersonalInfo;
-  
-  const title = `${info.name} | ${info.title}`;
-  const description = info.bio || `Portfolio of ${info.name}, a passionate Full Stack Developer.`;
+// This is the root layout. It applies to all routes.
+// Metadata is now defined in the specific layouts for each route group.
 
-  return {
-    title,
-    description,
-  };
-}
-
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const heads = headers();
-  const pathname = heads.get('next-url') || '';
-  const isAdmin = pathname.startsWith('/admin');
-
-  if (isAdmin) {
-    return (
-      <html lang="en" className="dark">
-        <head>
-          <link rel="preconnect" href="https://fonts.googleapis.com" />
-          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-          <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
-          <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
-        </head>
-        <body className="font-body antialiased bg-background text-foreground">
-          {children}
-          <Toaster />
-        </body>
-      </html>
-    );
-  }
-
-  const personalInfo = await getPersonalInfo();
-
   return (
     <html lang="en" className="dark">
       <head>
@@ -58,11 +18,8 @@ export default async function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
       </head>
-      <body className="font-body antialiased relative ">
-        <Squares className="absolute inset-0 -z-10 size-full" speed={0.1} squareSize={30} borderColor='hsl(var(--border) / 0.1)' hoverFillColor='hsl(var(--accent) / 0.05)' />
-        <Navbar personalInfo={personalInfo ?? staticPersonalInfo} />
-        <main>{children}</main>
-        <Footer />
+      <body className="font-body antialiased bg-background text-foreground">
+        {children}
         <Toaster />
       </body>
     </html>

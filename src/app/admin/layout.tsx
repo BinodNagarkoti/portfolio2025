@@ -1,16 +1,11 @@
-import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'Binodfolio Admin',
-  description: 'Admin panel for Binodfolio.',
-};
+// This file has been moved to /src/app/(admin)/layout.tsx
+// and can be safely deleted. By removing the default export, we prevent a route conflict.
 
-export default function AdminLayout({
+function DeprecatedAdminLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // This layout is nested within the root layout, so it should not contain <html> or <body> tags.
-  // It simply passes its children through to the next level.
   return <>{children}</>;
 }
