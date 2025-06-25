@@ -17,21 +17,38 @@ const navItems = [
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [navStyle, setNavStyle] = useState<'top' | 'middle' | 'bottom'>('top');
+  const [navStyle, setNavStyle] = useState<'stage1' | 'stage2' | 'stage3' | 'stage4' | 'stage5'>('stage1');
 
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
       const docHeight = document.documentElement.scrollHeight;
       const winHeight = window.innerHeight;
-      const isBottom = scrollY + winHeight >= docHeight - 50; // 50px threshold from bottom
-      
+      const scrollableHeight = docHeight - winHeight;
+
+      // Stage 1: At the very top
       if (scrollY < 50) {
-        setNavStyle('top');
-      } else if (isBottom) {
-        setNavStyle('bottom');
+        setNavStyle('stage1');
+        return;
+      }
+      
+      // Stage 5: At the very bottom
+      if (scrollY + winHeight >= docHeight - 50) {
+        setNavStyle('stage5');
+        return;
+      }
+      
+      // Stages 2-5: Based on scroll percentage
+      const scrollPercentage = scrollableHeight > 0 ? scrollY / scrollableHeight : 0;
+
+      if (scrollPercentage < 0.25) {
+        setNavStyle('stage2');
+      } else if (scrollPercentage < 0.5) {
+        setNavStyle('stage3');
+      } else if (scrollPercentage < 0.75) {
+        setNavStyle('stage4');
       } else {
-        setNavStyle('middle');
+        setNavStyle('stage5');
       }
     };
 
@@ -44,14 +61,18 @@ const Navbar = () => {
 
   const getNavClasses = () => {
     switch (navStyle) {
-      case 'top':
-        return 'max-w-lg px-6 h-16'; // Largest state
-      case 'middle':
-        return 'max-w-md px-4 h-14'; // Intermediate state
-      case 'bottom':
-        return 'max-w-sm px-3 h-12'; // Smallest state
+      case 'stage1':
+        return 'max-w-xl px-6 h-16'; // Largest
+      case 'stage2':
+        return 'max-w-lg px-5 h-[3.75rem]'; // Large
+      case 'stage3':
+        return 'max-w-md px-4 h-14'; // Medium
+      case 'stage4':
+        return 'max-w-sm px-3 h-[3.25rem]'; // Small
+      case 'stage5':
+        return 'max-w-xs px-2 h-12'; // Smallest
       default:
-        return 'max-w-lg px-6 h-16';
+        return 'max-w-xl px-6 h-16';
     }
   };
 
