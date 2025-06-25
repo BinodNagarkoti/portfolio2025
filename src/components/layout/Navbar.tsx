@@ -16,25 +16,51 @@ const navItems = [
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [navStyle, setNavStyle] = useState<'top' | 'middle' | 'bottom'>('top');
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      const scrollY = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight;
+      const winHeight = window.innerHeight;
+      const isBottom = scrollY + winHeight >= docHeight - 50; // 50px threshold from bottom
+      
+      if (scrollY < 50) {
+        setNavStyle('top');
+      } else if (isBottom) {
+        setNavStyle('bottom');
+      } else {
+        setNavStyle('middle');
+      }
     };
+
     window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Set initial state
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  const getNavClasses = () => {
+    switch (navStyle) {
+      case 'top':
+        return 'max-w-lg px-6 h-16'; // Largest state
+      case 'middle':
+        return 'max-w-md px-4 h-14'; // Intermediate state
+      case 'bottom':
+        return 'max-w-sm px-3 h-12'; // Smallest state
+      default:
+        return 'max-w-lg px-6 h-16';
+    }
+  };
 
   return (
     <>
       {/* Desktop Nav */}
       <nav
         className={cn(
-          'hidden md:flex fixed top-4 left-1/2 -translate-x-1/2 z-40 items-center justify-between rounded-full bg-background/50 backdrop-blur-xl border border-border/20 shadow-lg transition-all duration-300 ease-in-out',
-          isScrolled ? 'max-w-md px-4 h-14' : 'max-w-lg px-6 h-16'
+          'hidden md:flex fixed top-4 left-1/2 -translate-x-1/2 z-40 items-center justify-between rounded-full bg-background/50 backdrop-blur-xl border border-border/20 shadow-lg transition-all duration-500 ease-in-out',
+          getNavClasses()
         )}
       >
         <Link
