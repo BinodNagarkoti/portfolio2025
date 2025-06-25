@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
-import { personalInfo } from '@/lib/data';
+import type { PersonalInfo } from '@/lib/supabase-types';
 import { cn } from '@/lib/utils';
 
 const navItems = [
@@ -15,9 +15,14 @@ const navItems = [
   { name: 'Contact', href: '#contact' },
 ];
 
-const Navbar = () => {
+const Navbar = ({ personalInfo }: { personalInfo: PersonalInfo }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [navStyle, setNavStyle] = useState<'stage1' | 'stage2' | 'stage3' | 'stage4' | 'stage5'>('stage1');
+  
+  const initials = personalInfo.name
+    .split(' ')
+    .map(n => n[0])
+    .join('');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,19 +31,16 @@ const Navbar = () => {
       const winHeight = window.innerHeight;
       const scrollableHeight = docHeight - winHeight;
 
-      // Stage 1: At the very top
       if (scrollY < 50) {
         setNavStyle('stage1');
         return;
       }
       
-      // Stage 5: At the very bottom
       if (scrollY + winHeight >= docHeight - 50) {
         setNavStyle('stage5');
         return;
       }
       
-      // Stages 2-5: Based on scroll percentage
       const scrollPercentage = scrollableHeight > 0 ? scrollY / scrollableHeight : 0;
 
       if (scrollPercentage < 0.25) {
@@ -53,7 +55,7 @@ const Navbar = () => {
     };
 
     window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Set initial state
+    handleScroll();
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
@@ -92,7 +94,7 @@ const Navbar = () => {
             "h-9 w-9 text-sm"
             )}
         >
-          <span className="font-bold text-foreground">BN</span>
+          <span className="font-bold text-foreground">{initials}</span>
         </Link>
         <div className={cn("flex items-center", "space-x-1")}>
           {navItems.map((item) => (

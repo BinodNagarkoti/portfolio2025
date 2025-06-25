@@ -4,12 +4,12 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRightIcon, CodeIcon } from 'lucide-react';
-import { personalInfo } from '@/lib/data';
 import Image from 'next/image';
 import { Badge } from '../ui/badge';
 import ShinyText from '@/components/reactbits/TextAnimations/ShinyText/ShinyText';
+import type { PersonalInfo } from '@/lib/supabase-types';
   
-const HeroSection = () => {
+const HeroSection = ({ personalInfo }: { personalInfo: PersonalInfo }) => {
   return (
     <section id="home" className="relative min-h-[80vh] flex items-center py-20 pt-24 md:pt-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 z-10">
@@ -21,15 +21,12 @@ const HeroSection = () => {
             <div className="text-5xl sm:text-6xl lg:text-7xl font-bold">
               <ShinyText text={personalInfo.name} disabled={false} speed={3} />
               </div>
-            {/* <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold font-headline text-foreground tracking-tighter">
-              
-            </h1> */}
             <p className="text-2xl sm:text-3xl lg:text-4xl text-muted-foreground font-medium animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
               {personalInfo.title}
             </p>
             </div>
             <p className="mt-4 max-w-lg text-lg text-muted-foreground/80 mx-auto md:mx-0">
-              A passionate developer specializing in creating modern and performant web applications with a focus on user experience and clean code.
+              {personalInfo.bio}
             </p>
             <div className="flex flex-wrap gap-3 pt-2 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-400"><span className="px-4 py-2 text-sm rounded-full bg-primary/10 text-primary border border-primary/20">React</span><span className="px-4 py-2 text-sm rounded-full bg-primary/10 text-primary border border-primary/20">Vite</span><span className="px-4 py-2 text-sm rounded-full bg-primary/10 text-primary border border-primary/20">Typescript</span></div>
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
@@ -39,7 +36,7 @@ const HeroSection = () => {
                 </Link>
               </Button>
                <Button variant="outline" size="lg" asChild>
-                  <Link href={personalInfo.cvLink} target="_blank">
+                  <Link href={personalInfo.cv_url || '#'} target="_blank">
                     Download CV
                   </Link>
                 </Button>

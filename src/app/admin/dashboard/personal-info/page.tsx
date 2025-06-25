@@ -8,35 +8,33 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import type { PersonalInfo } from '@/lib/supabase-types';
-// import { createSupabaseBrowserClient } from '@/lib/supabase/client'; // To be used when fetching/saving
-import { generateProfessionalSubtitle } from '@/ai/flows/generate-subtitle-flow'; // AI Flow
+import { createSupabaseBrowserClient } from '@/lib/supabase/client';
+import { generateProfessionalSubtitle } from '@/ai/flows/generate-subtitle-flow';
 import { BotIcon, SaveIcon, UploadCloudIcon } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function PersonalInfoPage() {
   const { toast } = useToast();
-  // const supabase = createSupabaseBrowserClient(); // Initialize Supabase client when needed
-  const [personalInfo, setPersonalInfo] = useState<Partial<PersonalInfo>>({
-    name: 'Binod Nagarkoti', // Sample data
-    title: 'Frontend & Full Stack Developer',
-    contact_email: 'binod1365@gmail.com',
-    // other fields will be empty or loaded from Supabase
-  });
-  const [isLoading, setIsLoading] = useState(false);
+  const supabase = createSupabaseBrowserClient();
+  const [personalInfo, setPersonalInfo] = useState<Partial<PersonalInfo>>({});
+  const [isFetching, setIsFetching] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
   const [isAiLoading, setIsAiLoading] = useState(false);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     setIsLoading(true);
-  //     const { data, error } = await supabase.from('personal_info').select('*').single();
-  //     if (error) {
-  //       toast({ variant: 'destructive', title: 'Error fetching data', description: error.message });
-  //     } else if (data) {
-  //       setPersonalInfo(data);
-  //     }
-  //     setIsLoading(false);
-  //   };
-  //   fetchData();
-  // }, [supabase, toast]);
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsFetching(true);
+      const { data, error } = await supabase.from('personal_info').select('*').limit(1).single();
+      
+      if (error && error.code !== 'PGRST116') { // PGRST116 = no rows found
+        toast({ variant: 'destructive', title: 'Error fetching data', description: error.message });
+      } else if (data) {
+        setPersonalInfo(data);
+      }
+      setIsFetching(false);
+    };
+    fetchData();
+  }, [supabase, toast]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setPersonalInfo({ ...personalInfo, [e.target.name]: e.target.value });
@@ -46,7 +44,6 @@ export default function PersonalInfoPage() {
     const file = e.target.files?.[0];
     if (file) {
       // TODO: Implement actual file upload to Supabase Storage
-      // For now, we'll just store a placeholder name or path
       setPersonalInfo({ ...personalInfo, cv_url: `cvs/${file.name}` }); // Placeholder
       toast({ title: 'CV Selected', description: `${file.name} (Upload not implemented yet)` });
     }
@@ -68,23 +65,57 @@ export default function PersonalInfoPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    // const { data, error } = await supabase
-    //   .from('personal_info')
-    //   .upsert({ ...personalInfo, id: personalInfo.id || crypto.randomUUID() }) // Ensure ID for upsert
-    //   .select()
-    //   .single();
+    setIsSaving(true);
+    
+    // Use a consistent ID. If one doesn't exist, this is the first save.
+    // Let Supabase handle ID generation if the column has a default,
+    // otherwise, we need to provide one.
+    const dataToSave = { ...personalInfo };
+    if (!dataToSave.id) {
+        // A single record CMS should ideally have a fixed ID or be handled by policy
+        // For this example, we'll upsert and let the DB assign the ID on first insert.
+        // Subsequent saves will have the ID from the fetched data.
+        delete dataToSave.id; // Let postgres handle it if it's a serial or default uuid
+    }
 
-    // if (error) {
-    //   toast({ variant: 'destructive', title: 'Error saving data', description: error.message });
-    // } else if (data) {
-    //   setPersonalInfo(data);
-    //   toast({ title: 'Success', description: 'Personal info saved.' });
-    // }
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-    toast({ title: 'Success (Simulated)', description: 'Personal info would be saved here.' });
-    setIsLoading(false);
+    const { data, error } = await supabase
+      .from('personal_info')
+      .upsert(dataToSave)
+      .select()
+      .single();
+
+    if (error) {
+      toast({ variant: 'destructive', title: 'Error saving data', description: error.message });
+    } else if (data) {
+      setPersonalInfo(data);
+      toast({ title: 'Success', description: 'Personal info saved.' });
+    }
+    setIsSaving(false);
   };
+
+  if (isFetching) {
+    return (
+      <Card>
+        <CardHeader>
+          <Skeleton className="h-8 w-1/2" />
+          <Skeleton className="h-4 w-3/4" />
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-24 w-full" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+          <Skeleton className="h-10 w-24" />
+        </CardContent>
+      </Card>
+    )
+  }
 
   return (
     <Card>
@@ -169,8 +200,8 @@ export default function PersonalInfoPage() {
             <p className="text-xs text-muted-foreground mt-1">Note: Actual file upload to Supabase Storage needs separate backend logic.</p>
           </div>
 
-          <Button type="submit" disabled={isLoading} className="w-full md:w-auto">
-            {isLoading ? <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div> : <SaveIcon className="mr-2 h-4 w-4" />}
+          <Button type="submit" disabled={isSaving} className="w-full md:w-auto">
+            {isSaving ? <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div> : <SaveIcon className="mr-2 h-4 w-4" />}
             Save Personal Info
           </Button>
         </form>
