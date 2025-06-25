@@ -1,8 +1,2 @@
-'use client';
 
-// This file has been moved to /src/app/(admin)/admin/dashboard/education/page.tsx
-// and can be safely deleted. By removing the default export, we prevent a route conflict.
-
-function DeprecatedEducationAdminPage() {
-  return null;
-}
+// This file is deprecated and can be safely deleted. The active route is in /src/app/(admin)/admin/dashboard/education/page.tsx
