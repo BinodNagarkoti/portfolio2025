@@ -56,6 +56,7 @@ export async function getProjects(): Promise<{ data: Project[] | null, error: st
 }
 
 export async function getProjectsForAdmin(): Promise<{ data: Project[] | null, error: string | null }> {
+    noStore(); // Add noStore to prevent caching
     const supabase = createSupabaseServerClient();
     const { data, error } = await supabase
         .from('projects')
@@ -246,10 +247,16 @@ export async function deleteSkill(id: string): Promise<{ error: string | null }>
 // EXPERIENCE ACTIONS
 export async function getExperience(): Promise<{ data: Experience[] | null, error: string | null }> {
     noStore();
+    const personalInfo = await getPersonalInfo();
+    if (!personalInfo) {
+      return { data: [], error: null };
+    }
+
     const supabase = createSupabaseServerClient();
     const { data, error } = await supabase
         .from('experience')
         .select('*')
+        .eq('personal_info_id', personalInfo.id)
         .order('start_date', { ascending: false });
 
     if (error) {
@@ -320,10 +327,16 @@ export async function deleteExperience(id: string): Promise<{ error: string | nu
 // EDUCATION ACTIONS
 export async function getEducation(): Promise<{ data: Education[] | null, error: string | null }> {
     noStore();
+    const personalInfo = await getPersonalInfo();
+    if (!personalInfo) {
+      return { data: [], error: null };
+    }
+
     const supabase = createSupabaseServerClient();
     const { data, error } = await supabase
         .from('education')
         .select('*')
+        .eq('personal_info_id', personalInfo.id)
         .order('start_date', { ascending: false });
 
     if (error) {
