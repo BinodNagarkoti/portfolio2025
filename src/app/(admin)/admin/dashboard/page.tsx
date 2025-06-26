@@ -29,7 +29,7 @@ export default function DashboardPage() {
     try {
       const [projectsResult, postsResult, submissionsResult] = await Promise.all([
         getProjectsForAdmin(),
-        getPosts(),
+        getPosts({ admin: true }),
         getContactSubmissions()
       ]);
 

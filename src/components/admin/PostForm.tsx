@@ -13,11 +13,16 @@ import type { Post } from '@/lib/supabase-types';
 import { upsertPost } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const formSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   content: z.string().min(1, 'Content is required'),
   tags: z.string().optional(),
+  published: z.boolean().default(false),
 });
 
 type PostFormValues = z.infer<typeof formSchema>;
@@ -35,12 +40,15 @@ export function PostForm({ post, onSuccess }: PostFormProps) {
     title: post?.title || '',
     content: post?.content || '',
     tags: post?.tags?.join(', ') || '',
+    published: post?.published || false,
   };
 
   const form = useForm<PostFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues,
   });
+
+  const contentValue = form.watch('content');
 
   const onSubmit = async (values: PostFormValues) => {
     setIsSaving(true);
@@ -75,29 +83,76 @@ export function PostForm({ post, onSuccess }: PostFormProps) {
             </FormItem>
           )}
         />
+        
         <FormField
           control={form.control}
           name="content"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Content</FormLabel>
-              <FormControl><Textarea placeholder="Write your post content here. Supports Markdown." {...field} rows={10} /></FormControl>
+              <Tabs defaultValue="write" className="w-full">
+                <TabsList className='mb-2'>
+                  <TabsTrigger value="write">Write</TabsTrigger>
+                  <TabsTrigger value="preview">Preview</TabsTrigger>
+                </TabsList>
+                <TabsContent value="write">
+                  <FormControl>
+                    <Textarea
+                      placeholder="Write your post content here. Supports Markdown."
+                      {...field}
+                      rows={15}
+                    />
+                  </FormControl>
+                </TabsContent>
+                <TabsContent value="preview">
+                  <div className="prose dark:prose-invert prose-sm min-h-[320px] w-full max-w-none rounded-md border p-4 bg-background">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {contentValue || 'Nothing to preview yet.'}
+                    </ReactMarkdown>
+                  </div>
+                </TabsContent>
+              </Tabs>
               <FormMessage />
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="tags"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Tags</FormLabel>
-              <FormControl><Input placeholder="Tech, JavaScript, AI" {...field} /></FormControl>
+              <FormControl><Input placeholder="Tech, JavaScript, AI" {...field} value={field.value ?? ''}/></FormControl>
               <FormDescription>Comma-separated list of tags.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name="published"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel>
+                  Publish Post
+                </FormLabel>
+                <FormDescription>
+                  Make this post visible on your public portfolio.
+                </FormDescription>
+              </div>
+            </FormItem>
+          )}
+        />
+
         <Button type="submit" disabled={isSaving}>
             {isSaving ? <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div> : <SaveIcon className="mr-2 h-4 w-4" />}
             {isSaving ? 'Saving...' : 'Save Post'}

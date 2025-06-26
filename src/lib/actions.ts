@@ -341,7 +341,7 @@ export async function getEducation(): Promise<{ data: Education[] | null, error:
         return { data: [], error: null };
     }
 
-    const supabase = await createSupabaseServerClient(true);
+    const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase
         .from('education')
         .select('*')
@@ -414,19 +414,34 @@ export async function deleteEducation(id: string): Promise<{ error: string | nul
 }
 
 // POSTS (BLOG) ACTIONS
-export async function getPosts(): Promise<{ data: Post[] | null, error: string | null }> {
-    noStore();
-    const personalInfo = await getPersonalInfo();
-    if (!personalInfo) {
-        return { data: [], error: null };
-    }
+function slugify(text: string): string {
+    return text
+        .toString()
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/[^\w-]+/g, '')
+        .replace(/--+/g, '-')
+        .replace(/^-+/, '')
+        .replace(/-+$/, '');
+}
 
-    const supabase = await createSupabaseServerClient();
-    const { data, error } = await supabase
-        .from('posts')
-        .select('*')
-        .eq('personal_info_id', personalInfo.id)
-        .order('created_at', { ascending: false });
+export async function getPosts(options: { publishedOnly?: boolean; admin?: boolean } = {}): Promise<{ data: Post[] | null, error: string | null }> {
+    const { publishedOnly = false, admin = false } = options;
+    noStore();
+    const supabase = await createSupabaseServerClient(admin);
+
+    let query = supabase.from('posts').select('*');
+
+    if (publishedOnly) {
+        query = query.eq('published', true);
+    }
+    
+    // In a multi-user CMS, you'd filter by personal_info_id here
+    // For this single-user portfolio, admin sees all, public sees published.
+
+    const { data, error } = await query.order('created_at', { ascending: false });
 
     if (error) {
         console.error('Database Error: Failed to Fetch Posts.', error.message);
@@ -435,11 +450,31 @@ export async function getPosts(): Promise<{ data: Post[] | null, error: string |
     return { data, error: null };
 }
 
+export async function getPostBySlug(slug: string): Promise<{ data: Post | null, error: string | null }> {
+    noStore();
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+        .from('posts')
+        .select('*')
+        .eq('slug', slug)
+        .eq('published', true)
+        .single();
+    
+    if (error) {
+        if (error.code !== 'PGRST116') { // Don't log "not found" as a server error
+             console.error('Database Error: Failed to Fetch Post by Slug.', error.message);
+        }
+        return { data: null, error: error.message };
+    }
+    return { data, error: null };
+}
+
 const PostSchema = z.object({
-    id: z.string().optional(),
-    title: z.string().min(1, 'Title is required'),
-    content: z.string().min(1, 'Content is required'),
-    tags: z.string().optional(),
+  id: z.string().optional(),
+  title: z.string().min(1, 'Title is required'),
+  content: z.string().min(1, 'Content is required'),
+  tags: z.string().optional(),
+  published: z.boolean().default(false),
 });
 
 export async function upsertPost(formData: { id?: string, [key: string]: any }): Promise<{ data: Post | null, error: string | null }> {
@@ -460,12 +495,24 @@ export async function upsertPost(formData: { id?: string, [key: string]: any }):
     const stringToArray = (str: string | undefined) => str ? str.split(',').map(item => item.trim()).filter(Boolean) : [];
     const snippet = validatedFields.data.content.substring(0, 150) + (validatedFields.data.content.length > 150 ? '...' : '');
 
+    let slug = slugify(validatedFields.data.title);
+    const { data: existingPost } = await supabase
+        .from('posts')
+        .select('id')
+        .eq('slug', slug)
+        .not('id', 'eq', validatedFields.data.id || '00000000-0000-0000-0000-000000000000')
+        .single();
+
+    if (existingPost) {
+        slug = `${slug}-${Math.random().toString(36).substring(2, 7)}`;
+    }
+
     const dataToUpsert = {
         ...validatedFields.data,
         personal_info_id: personalInfo.id,
+        slug: slug,
         tags: stringToArray(validatedFields.data.tags),
         snippet,
-        published_at: new Date().toISOString(), // Or handle publishing state separately
     };
 
     const { data, error } = await supabase.from('posts').upsert(dataToUpsert).select().single();
@@ -476,6 +523,8 @@ export async function upsertPost(formData: { id?: string, [key: string]: any }):
     }
 
     revalidatePath('/');
+    revalidatePath('/blog'); // Revalidate the blog index
+    revalidatePath(`/blog/${slug}`); // Revalidate the specific post page
     revalidatePath('/admin/dashboard/blog');
 
     return { data, error: null };

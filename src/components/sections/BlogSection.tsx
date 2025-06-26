@@ -8,7 +8,7 @@ import { getPosts } from '@/lib/actions';
 import { format, parseISO } from 'date-fns';
 
 const BlogSection = async () => {
-  const { data: posts, error } = await getPosts();
+  const { data: posts, error } = await getPosts({ publishedOnly: true });
 
   if (error || !posts || posts.length === 0) {
     return null;
@@ -33,8 +33,7 @@ const BlogSection = async () => {
                 ))}
               </div>
               <Button variant="link" asChild className="p-0 h-auto">
-                {/* In a real app, this would link to /blog/[slug] or similar */}
-                <Link href="#">Read More</Link>
+                <Link href={`/blog/${post.slug}`}>Read More</Link>
               </Button>
             </CardFooter>
           </Card>

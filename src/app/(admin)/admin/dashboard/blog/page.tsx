@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircleIcon, Trash2Icon, EditIcon } from "lucide-react";
+import { PlusCircleIcon, Trash2Icon, EditIcon, GlobeIcon, EyeOffIcon } from "lucide-react";
 import { getPosts, deletePost } from '@/lib/actions';
 import type { Post } from '@/lib/supabase-types';
 import { PostForm } from '@/components/admin/PostForm';
@@ -15,6 +15,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format, parseISO } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
+import Link from 'next/link';
 
 export default function BlogAdminPage() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -25,7 +26,7 @@ export default function BlogAdminPage() {
 
   const fetchPosts = useCallback(async () => {
     setIsLoading(true);
-    const result = await getPosts();
+    const result = await getPosts({ admin: true });
     if (result.error) {
       toast({ variant: 'destructive', title: 'Error fetching posts', description: result.error });
     } else if (result.data) {
@@ -102,7 +103,7 @@ export default function BlogAdminPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Title</TableHead>
-                <TableHead>Tags</TableHead>
+                <TableHead>Status</TableHead>
                 <TableHead>Created</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
@@ -111,15 +112,27 @@ export default function BlogAdminPage() {
               {posts.map((post) => (
                 <TableRow key={post.id}>
                   <TableCell className="font-medium">{post.title}</TableCell>
-                  <TableCell>
-                    <div className="flex flex-wrap gap-1">
-                      {post.tags?.map(tag => <Badge key={tag} variant="secondary">{tag}</Badge>)}
-                    </div>
+                   <TableCell>
+                    <Badge variant={post.published ? 'default' : 'outline'}>
+                        {post.published ? (
+                            <GlobeIcon className="mr-1 h-3 w-3" />
+                        ) : (
+                             <EyeOffIcon className="mr-1 h-3 w-3" />
+                        )}
+                      {post.published ? 'Published' : 'Draft'}
+                    </Badge>
                   </TableCell>
                   <TableCell>
                     {format(parseISO(post.created_at), 'PPP')}
                   </TableCell>
                   <TableCell className="text-right">
+                    {post.published && (
+                      <Button variant="ghost" size="icon" asChild>
+                        <Link href={`/blog/${post.slug}`} target="_blank" title="View live post">
+                          <GlobeIcon className="h-4 w-4" />
+                        </Link>
+                      </Button>
+                    )}
                     <Button variant="ghost" size="icon" onClick={() => handleEdit(post)}><EditIcon className="h-4 w-4" /></Button>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
@@ -151,14 +164,15 @@ export default function BlogAdminPage() {
       </Card>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-4xl max-h-[90vh] flex flex-col">
           <DialogHeader>
             <DialogTitle>{editingPost ? 'Edit Post' : 'Add New Post'}</DialogTitle>
           </DialogHeader>
-          <PostForm post={editingPost} onSuccess={onFormSuccess} />
+          <div className="flex-grow overflow-y-auto pr-6">
+            <PostForm post={editingPost} onSuccess={onFormSuccess} />
+          </div>
         </DialogContent>
       </Dialog>
     </div>
   );
 }
-

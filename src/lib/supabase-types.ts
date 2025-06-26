@@ -113,10 +113,11 @@ export interface Post {
     id: string;
     personal_info_id: string;
     title: string;
+    slug: string;
     content: string;
     snippet?: string | null;
     tags: string[] | null;
-    published_at?: string | null;
+    published: boolean;
     created_at: string;
     updated_at: string;
 }
