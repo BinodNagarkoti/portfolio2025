@@ -1,63 +1,72 @@
 
 'use server'
-
+import { redirect } from 'next/navigation'
 import { createSupabaseServerClient } from '@/lib/supabase/server'
 import { unstable_noStore as noStore, revalidatePath } from 'next/cache';
 import type { PersonalInfo, Project, SkillCategoryWithSkills, Skill, SkillCategory, Experience, Education, Post, ContactSubmission, Achievement, Certification } from './supabase-types';
 import { z } from 'zod';
-
-export async function getPersonalInfo(): Promise<PersonalInfo | null> {
-  noStore();
-  const supabase = createSupabaseServerClient()
-  
-  const { data, error } = await supabase.from('personal_info').select('*').limit(1).single();
-  
-  if (error) {
-    if (error.code === 'PGRST116') {
-      console.log('No personal info found in database. This is expected if it has not been set yet.');
-      return null;
+export async function login(formData: FormData) {
+    const supabase = await createSupabaseServerClient()  // type-casting here for convenience  // in practice, you should validate your inputs  
+    const data = { email: formData.get('email') as string, password: formData.get('password') as string, }
+    const { error } = await supabase.auth.signInWithPassword(data)
+    if (error) {
+        redirect('/error')
     }
-    console.error('Database Error: Failed to Fetch Personal Info.', error);
-    return null;
-  }
+    revalidatePath('/', 'layout')
+    redirect('/')
+}
+export async function getPersonalInfo(): Promise<PersonalInfo | null> {
+    noStore();
+    const supabase = await createSupabaseServerClient()
 
-  return data;
+    const { data, error } = await supabase.from('personal_info').select('*').limit(1).single();
+
+    if (error) {
+        if (error.code === 'PGRST116') {
+            console.log('No personal info found in database. This is expected if it has not been set yet.');
+            return null;
+        }
+        console.error('Database Error: Failed to Fetch Personal Info.', error);
+        return null;
+    }
+
+    return data;
 }
 
 
 // Schema for project form validation
 const ProjectSchema = z.object({
-  id: z.string().optional(),
-  title: z.string().min(1, 'Title is required'),
-  description: z.string().min(1, 'Description is required'),
-  long_description: z.string().optional(),
-  technologies: z.string().optional(),
-  cover_image_url: z.string().optional(),
-  live_link: z.string().url().optional().or(z.literal('')),
-  github_link: z.string().url().optional().or(z.literal('')),
-  project_type: z.enum(['personal', 'professional_freelance', 'professional_employment']),
-  category_tags: z.string().optional(),
+    id: z.string().optional(),
+    title: z.string().min(1, 'Title is required'),
+    description: z.string().min(1, 'Description is required'),
+    long_description: z.string().optional(),
+    technologies: z.string().optional(),
+    cover_image_url: z.string().optional(),
+    live_link: z.string().url().optional().or(z.literal('')),
+    github_link: z.string().url().optional().or(z.literal('')),
+    project_type: z.enum(['personal', 'professional_freelance', 'professional_employment']),
+    category_tags: z.string().optional(),
 });
 
 
 export async function getProjects(): Promise<{ data: Project[] | null, error: string | null }> {
-  noStore();
-  const supabase = createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from('projects')
-    .select('*')
-    .order('created_at', { ascending: false });
+    noStore();
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-  if (error) {
-    console.error('Database Error: Failed to Fetch Projects.', error);
-    return { data: null, error: error.message };
-  }
-  return { data, error: null };
+    if (error) {
+        console.error('Database Error: Failed to Fetch Projects.', error);
+        return { data: null, error: error.message };
+    }
+    return { data, error: null };
 }
 
 export async function getProjectsForAdmin(): Promise<{ data: Project[] | null, error: string | null }> {
     noStore(); // Add noStore to prevent caching
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient(true);
     const { data, error } = await supabase
         .from('projects')
         .select('*')
@@ -72,39 +81,39 @@ export async function getProjectsForAdmin(): Promise<{ data: Project[] | null, e
 }
 
 export async function upsertProject(formData: FormData): Promise<{ data: Project | null, error: string | null }> {
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient(true);
     const personalInfo = await getPersonalInfo();
-    
+
     if (!personalInfo) {
-      return { data: null, error: 'Could not find personal info to associate project with.' };
+        return { data: null, error: 'Could not find personal info to associate project with.' };
     }
 
     const rawFormData = Object.fromEntries(formData.entries());
-    
+
     const validatedFields = ProjectSchema.safeParse(rawFormData);
     if (!validatedFields.success) {
-      console.error('Form validation error:', validatedFields.error.flatten().fieldErrors);
-      return { data: null, error: 'Invalid form data.' };
+        console.error('Form validation error:', validatedFields.error.flatten().fieldErrors);
+        return { data: null, error: 'Invalid form data.' };
     }
 
     let coverImageUrl = validatedFields.data.cover_image_url || null;
     const imageFile = formData.get('cover_image') as File | null;
 
     if (imageFile && imageFile.size > 0) {
-      const fileName = `${personalInfo.id}/${Date.now()}_${imageFile.name}`;
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('projects') // Assuming 'projects' is your storage bucket name
-        .upload(fileName, imageFile, { upsert: true });
+        const fileName = `${personalInfo.id}/${Date.now()}_${imageFile.name}`;
+        const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('projects') // Assuming 'projects' is your storage bucket name
+            .upload(fileName, imageFile, { upsert: true });
 
-      if (uploadError) {
-        console.error('Storage Error:', uploadError);
-        return { data: null, error: 'Failed to upload image.' };
-      }
-      
-      const { data: urlData } = supabase.storage.from('projects').getPublicUrl(uploadData.path);
-      coverImageUrl = urlData.publicUrl;
+        if (uploadError) {
+            console.error('Storage Error:', uploadError);
+            return { data: null, error: 'Failed to upload image.' };
+        }
+
+        const { data: urlData } = supabase.storage.from('projects').getPublicUrl(uploadData.path);
+        coverImageUrl = urlData.publicUrl;
     }
-    
+
     const stringToArray = (str: string | undefined) => str ? str.split(',').map(item => item.trim()).filter(Boolean) : [];
 
     const dataToUpsert: Omit<Project, 'id' | 'created_at' | 'updated_at'> & { id?: string } = {
@@ -114,18 +123,18 @@ export async function upsertProject(formData: FormData): Promise<{ data: Project
         category_tags: stringToArray(validatedFields.data.category_tags),
         cover_image_url: coverImageUrl,
     };
-    
+
     // If no ID, it's an insert. If ID exists, it's an update.
-    if(!validatedFields.data.id) {
+    if (!validatedFields.data.id) {
         delete dataToUpsert.id;
     }
-    
+
     const { data, error } = await supabase
         .from('projects')
         .upsert(dataToUpsert)
         .select()
         .single();
-    
+
     if (error) {
         console.error('Database Upsert Error:', error);
         return { data: null, error: error.message };
@@ -138,7 +147,7 @@ export async function upsertProject(formData: FormData): Promise<{ data: Project
 }
 
 export async function deleteProject(id: string): Promise<{ error: string | null }> {
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient(true);
 
     // Also delete image from storage
     const { data: projectData, error: fetchError } = await supabase.from('projects').select('cover_image_url').eq('id', id).single();
@@ -168,7 +177,7 @@ export async function deleteProject(id: string): Promise<{ error: string | null 
 // SKILLS ACTIONS
 export async function getSkillCategoriesWithSkills(): Promise<{ data: SkillCategoryWithSkills[] | null, error: string | null }> {
     noStore();
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase
         .from('skill_categories')
         .select('*, skills (*, skill_categories (name))')
@@ -193,10 +202,10 @@ export async function upsertSkillCategory(categoryData: { id?: string, name: str
     if (!validatedFields.success) {
         return { data: null, error: 'Invalid category data.' };
     }
-    
-    const supabase = createSupabaseServerClient();
+
+    const supabase = await createSupabaseServerClient(true);
     const { data, error } = await supabase.from('skill_categories').upsert(validatedFields.data).select().single();
-    
+
     if (error) return { data: null, error: error.message };
     revalidatePath('/admin/dashboard/skills');
     revalidatePath('/');
@@ -204,7 +213,7 @@ export async function upsertSkillCategory(categoryData: { id?: string, name: str
 }
 
 export async function deleteSkillCategory(id: string): Promise<{ error: string | null }> {
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient(true);
     const { error } = await supabase.from('skill_categories').delete().match({ id });
     if (error) return { error: error.message };
     revalidatePath('/admin/dashboard/skills');
@@ -226,7 +235,7 @@ export async function upsertSkill(skillData: { id?: string, name: string, level:
         return { data: null, error: 'Invalid skill data.' };
     }
 
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient(true);
     const { data, error } = await supabase.from('skills').upsert(validatedFields.data).select().single();
 
     if (error) return { data: null, error: error.message };
@@ -236,7 +245,7 @@ export async function upsertSkill(skillData: { id?: string, name: string, level:
 }
 
 export async function deleteSkill(id: string): Promise<{ error: string | null }> {
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient(true);
     const { error } = await supabase.from('skills').delete().match({ id });
     if (error) return { error: error.message };
     revalidatePath('/admin/dashboard/skills');
@@ -249,10 +258,10 @@ export async function getExperience(): Promise<{ data: Experience[] | null, erro
     noStore();
     const personalInfo = await getPersonalInfo();
     if (!personalInfo) {
-      return { data: [], error: null };
+        return { data: [], error: null };
     }
 
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase
         .from('experience')
         .select('*')
@@ -284,7 +293,7 @@ export async function upsertExperience(formData: { id?: string, [key: string]: a
         return { data: null, error: 'Invalid form data.' };
     }
 
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient(true);
     const { data: personalInfo } = await supabase.from('personal_info').select('id').single();
 
     if (!personalInfo) {
@@ -295,7 +304,7 @@ export async function upsertExperience(formData: { id?: string, [key: string]: a
         ...validatedFields.data,
         personal_info_id: personalInfo.id,
     };
-    
+
     const { data, error } = await supabase.from('experience').upsert(dataToUpsert).select().single();
 
     if (error) {
@@ -310,7 +319,7 @@ export async function upsertExperience(formData: { id?: string, [key: string]: a
 }
 
 export async function deleteExperience(id: string): Promise<{ error: string | null }> {
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient(true);
     const { error } = await supabase.from('experience').delete().match({ id });
 
     if (error) {
@@ -329,10 +338,10 @@ export async function getEducation(): Promise<{ data: Education[] | null, error:
     noStore();
     const personalInfo = await getPersonalInfo();
     if (!personalInfo) {
-      return { data: [], error: null };
+        return { data: [], error: null };
     }
 
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient(true);
     const { data, error } = await supabase
         .from('education')
         .select('*')
@@ -364,7 +373,7 @@ export async function upsertEducation(formData: { id?: string, [key: string]: an
         return { data: null, error: 'Invalid form data.' };
     }
 
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient(true);
     const { data: personalInfo } = await supabase.from('personal_info').select('id').single();
 
     if (!personalInfo) {
@@ -390,7 +399,7 @@ export async function upsertEducation(formData: { id?: string, [key: string]: an
 }
 
 export async function deleteEducation(id: string): Promise<{ error: string | null }> {
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient(true);
     const { error } = await supabase.from('education').delete().match({ id });
 
     if (error) {
@@ -412,7 +421,7 @@ export async function getPosts(): Promise<{ data: Post[] | null, error: string |
         return { data: [], error: null };
     }
 
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase
         .from('posts')
         .select('*')
@@ -441,13 +450,13 @@ export async function upsertPost(formData: { id?: string, [key: string]: any }):
         return { data: null, error: 'Invalid form data.' };
     }
 
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient(true);
     const personalInfo = await getPersonalInfo();
 
     if (!personalInfo) {
         return { data: null, error: 'Personal info not found.' };
     }
-    
+
     const stringToArray = (str: string | undefined) => str ? str.split(',').map(item => item.trim()).filter(Boolean) : [];
     const snippet = validatedFields.data.content.substring(0, 150) + (validatedFields.data.content.length > 150 ? '...' : '');
 
@@ -458,7 +467,7 @@ export async function upsertPost(formData: { id?: string, [key: string]: any }):
         snippet,
         published_at: new Date().toISOString(), // Or handle publishing state separately
     };
-    
+
     const { data, error } = await supabase.from('posts').upsert(dataToUpsert).select().single();
 
     if (error) {
@@ -473,7 +482,7 @@ export async function upsertPost(formData: { id?: string, [key: string]: any }):
 }
 
 export async function deletePost(id: string): Promise<{ error: string | null }> {
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient(true);
     const { error } = await supabase.from('posts').delete().match({ id });
 
     if (error) {
@@ -490,27 +499,27 @@ export async function deletePost(id: string): Promise<{ error: string | null }> 
 
 // CONTACT SUBMISSION ACTIONS
 const ContactFormSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  email: z.string().email('Invalid email'),
-  message: z.string().min(1, 'Message is required'),
+    name: z.string().min(1, 'Name is required'),
+    email: z.string().email('Invalid email'),
+    message: z.string().min(1, 'Message is required'),
 });
 
 export async function submitContactForm(formData: { name: string, email: string, message: string }): Promise<{ data: ContactSubmission | null, error: string | null }> {
     const validatedFields = ContactFormSchema.safeParse(formData);
     if (!validatedFields.success) {
-      return { data: null, error: 'Invalid form data.' };
+        return { data: null, error: 'Invalid form data.' };
     }
 
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase
-      .from('contact_submissions')
-      .insert({ ...validatedFields.data })
-      .select()
-      .single();
+        .from('contact_submissions')
+        .insert({ ...validatedFields.data })
+        .select()
+        .single();
 
     if (error) {
-      console.error('Database Insert Error:', error);
-      return { data: null, error: 'There was a problem submitting your message. Please try again.' };
+        console.error('Database Insert Error:', error);
+        return { data: null, error: 'There was a problem submitting your message. Please try again.' };
     }
 
     revalidatePath('/admin/dashboard/contact-submissions');
@@ -520,7 +529,7 @@ export async function submitContactForm(formData: { name: string, email: string,
 
 export async function getContactSubmissions(): Promise<{ data: ContactSubmission[] | null, error: string | null }> {
     noStore();
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient(true);
     const { data, error } = await supabase
         .from('contact_submissions')
         .select('*')
@@ -534,7 +543,7 @@ export async function getContactSubmissions(): Promise<{ data: ContactSubmission
 }
 
 export async function updateContactSubmissionReadStatus(id: string, is_read: boolean): Promise<{ data: ContactSubmission | null, error: string | null }> {
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient(true);
     const { data, error } = await supabase
         .from('contact_submissions')
         .update({ is_read })
@@ -551,7 +560,7 @@ export async function updateContactSubmissionReadStatus(id: string, is_read: boo
 }
 
 export async function deleteContactSubmission(id: string): Promise<{ error: string | null }> {
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient(true);
     const { error } = await supabase.from('contact_submissions').delete().match({ id });
 
     if (error) {
@@ -567,10 +576,10 @@ export async function getAchievements(): Promise<{ data: Achievement[] | null, e
     noStore();
     const personalInfo = await getPersonalInfo();
     if (!personalInfo) {
-      return { data: [], error: null };
+        return { data: [], error: null };
     }
 
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase
         .from('achievements')
         .select('*')
@@ -599,7 +608,7 @@ export async function upsertAchievement(formData: { id?: string, [key: string]: 
         return { data: null, error: 'Invalid form data.' };
     }
 
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient(true);
     const { data: personalInfo } = await supabase.from('personal_info').select('id').single();
 
     if (!personalInfo) {
@@ -625,7 +634,7 @@ export async function upsertAchievement(formData: { id?: string, [key: string]: 
 }
 
 export async function deleteAchievement(id: string): Promise<{ error: string | null }> {
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient(true);
     const { error } = await supabase.from('achievements').delete().match({ id });
 
     if (error) {
@@ -647,7 +656,7 @@ export async function getCertifications(): Promise<{ data: Certification[] | nul
         return { data: [], error: null };
     }
 
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase
         .from('certifications')
         .select('*')
@@ -672,7 +681,7 @@ const CertificationSchema = z.object({
 });
 
 export async function upsertCertification(formData: FormData): Promise<{ data: Certification | null, error: string | null }> {
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient(true);
     const personalInfo = await getPersonalInfo();
     if (!personalInfo) {
         return { data: null, error: 'Could not find personal info to associate certification with.' };
@@ -698,7 +707,7 @@ export async function upsertCertification(formData: FormData): Promise<{ data: C
             console.error('Storage Error:', uploadError);
             return { data: null, error: 'Failed to upload PDF.' };
         }
-        
+
         const { data: urlData } = supabase.storage.from('certifications').getPublicUrl(uploadData.path);
         pdfUrl = urlData.publicUrl;
     }
@@ -708,8 +717,8 @@ export async function upsertCertification(formData: FormData): Promise<{ data: C
         personal_info_id: personalInfo.id,
         certificate_pdf_url: pdfUrl,
     };
-     if (!validatedFields.data.id) {
-        delete (dataToUpsert as {id?: string}).id;
+    if (!validatedFields.data.id) {
+        delete (dataToUpsert as { id?: string }).id;
     }
 
     const { data, error } = await supabase.from('certifications').upsert(dataToUpsert).select().single();
@@ -724,8 +733,8 @@ export async function upsertCertification(formData: FormData): Promise<{ data: C
 }
 
 export async function deleteCertification(id: string): Promise<{ error: string | null }> {
-    const supabase = createSupabaseServerClient();
-    
+    const supabase = await createSupabaseServerClient(true);
+
     // Also delete PDF from storage
     const { data: certData, error: fetchError } = await supabase.from('certifications').select('certificate_pdf_url').eq('id', id).single();
     if (fetchError) {

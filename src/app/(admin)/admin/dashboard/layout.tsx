@@ -33,9 +33,10 @@ import {
   StarIcon,
 } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import { staticPersonalInfo } from '@/lib/data';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 const navItems = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboardIcon },
@@ -65,6 +66,7 @@ const navItems = [
 ];
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
+  const router = useRouter()
   const pathname = usePathname();
   const [userName, setUserName] = useState<string>(staticPersonalInfo.name.split(' ')[0]);
 
@@ -76,6 +78,18 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         setUserName(data.name.split(' ')[0]);
       }
     };
+    const checkSession = async () => {
+
+      const { data, error } = await supabase.auth.getSession() 
+      if (error || !data?.session) return false;
+      return true;
+    } 
+     checkSession().then((session) => {
+      if (!session) {
+        router.push('/admin/login');
+      }
+    });
+    
     fetchName();
   }, []);
 

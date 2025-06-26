@@ -3,7 +3,7 @@
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { date, z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -17,6 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { format, parseISO } from 'date-fns';
+import { CustomSelectDate } from '../common/FormItem/CustomSelectDate';
 
 const formSchema = z.object({
   job_title: z.string().min(1, 'Job title is required'),
@@ -34,10 +35,13 @@ interface ExperienceFormProps {
   onSuccess?: () => void;
 }
 
-export function ExperienceForm({ experience, onSuccess }: ExperienceFormProps) {
+export function 
+ExperienceForm({ experience, onSuccess }: ExperienceFormProps) {
   const { toast } = useToast();
   const [isSaving, setIsSaving] = useState(false);
-
+  const [open, setOpen] = useState(false);
+  const [open2, setOpen2] = useState(false);
+  const [date, setDate] = useState<Date>()
   const parseDate = (dateStr: string | null | undefined): Date | undefined => {
     return dateStr ? parseISO(dateStr) : undefined;
   };
@@ -77,9 +81,9 @@ export function ExperienceForm({ experience, onSuccess }: ExperienceFormProps) {
     setIsSaving(false);
   };
 
-  return (
+  return (<>
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit, console.log)} className="space-y-6">
         <FormField
           control={form.control}
           name="job_title"
@@ -101,7 +105,7 @@ export function ExperienceForm({ experience, onSuccess }: ExperienceFormProps) {
               <FormMessage />
             </FormItem>
           )}
-        />
+          />
          <FormField
           control={form.control}
           name="location"
@@ -125,47 +129,31 @@ export function ExperienceForm({ experience, onSuccess }: ExperienceFormProps) {
           )}
         />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FormField
+          
+              <FormField
                 control={form.control}
                 name="start_date"
                 render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                    <FormLabel>Start Date</FormLabel>
-                    <Popover>
-                        <PopoverTrigger asChild>
-                        <FormControl>
-                            <Button
-                            variant={"outline"}
-                            className={cn("pl-3 text-left font-normal", !field.value && "text-muted-foreground")}
-                            >
-                            {field.value ? (format(field.value, "PPP")) : (<span>Pick a date</span>)}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                        </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
-                            initialFocus
-                        />
-                        </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                    </FormItem>
+                    <CustomSelectDate disabledPast={false} disabledFuture={true} field={field} label="Start Date" />
+                  
                 )}
-            />
-            <FormField
+            /> 
+             <FormField
+                control={form.control}
+                name="end_date"
+                render={({ field }) => (
+                    <CustomSelectDate formDescription="Leave blank if this is your current role." disabledPast={false} disabledFuture={true} field={field} label="End Date" />
+
+                )}
+            /> 
+            {/* <FormField
                 control={form.control}
                 name="end_date"
                 render={({ field }) => (
                     <FormItem className="flex flex-col">
                     <FormLabel>End Date (or leave blank)</FormLabel>
-                    <Popover>
+                    <Popover open={open2} onOpenChange={(_open2:boolean)=>{setOpen2(_open2)}}>
                         <PopoverTrigger asChild>
-                        <FormControl>
                             <Button
                             variant={"outline"}
                             className={cn("pl-3 text-left font-normal", !field.value && "text-muted-foreground")}
@@ -173,15 +161,12 @@ export function ExperienceForm({ experience, onSuccess }: ExperienceFormProps) {
                             {field.value ? (format(field.value, "PPP")) : (<span>Present</span>)}
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                             </Button>
-                        </FormControl>
                         </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
+                        <PopoverContent className="w-auto p-0 overflow-hidden" align="start">
                         <Calendar
                             mode="single"
                             selected={field.value ?? undefined}
-                            onSelect={field.onChange}
-                            disabled={(date) => date > new Date()}
-                            initialFocus
+                            onSelect={(date)=>{field.onChange(date);setOpen2(false);}}
                         />
                         </PopoverContent>
                     </Popover>
@@ -189,7 +174,7 @@ export function ExperienceForm({ experience, onSuccess }: ExperienceFormProps) {
                     <FormMessage />
                     </FormItem>
                 )}
-            />
+            /> */}
         </div>
 
         <Button type="submit" disabled={isSaving}>
@@ -198,5 +183,6 @@ export function ExperienceForm({ experience, onSuccess }: ExperienceFormProps) {
         </Button>
       </form>
     </Form>
+                            </>
   );
 }

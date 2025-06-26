@@ -17,6 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { format, parseISO } from 'date-fns';
+import { CustomSelectDate } from '../common/FormItem/CustomSelectDate';
 
 const formSchema = z.object({
   degree: z.string().min(1, 'Degree is required'),
@@ -129,65 +130,14 @@ export function EducationForm({ education, onSuccess }: EducationFormProps) {
                 control={form.control}
                 name="start_date"
                 render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                    <FormLabel>Start Date</FormLabel>
-                    <Popover>
-                        <PopoverTrigger asChild>
-                        <FormControl>
-                            <Button
-                            variant={"outline"}
-                            className={cn("pl-3 text-left font-normal", !field.value && "text-muted-foreground")}
-                            >
-                            {field.value ? (format(field.value, "PPP")) : (<span>Pick a date</span>)}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                        </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
-                            initialFocus
-                        />
-                        </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                    </FormItem>
+                  <CustomSelectDate  disabledPast={false} disabledFuture={true} field={field} label="Start Date" />
                 )}
             />
             <FormField
                 control={form.control}
                 name="end_date"
                 render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                    <FormLabel>End Date (or leave blank)</FormLabel>
-                    <Popover>
-                        <PopoverTrigger asChild>
-                        <FormControl>
-                            <Button
-                            variant={"outline"}
-                            className={cn("pl-3 text-left font-normal", !field.value && "text-muted-foreground")}
-                            >
-                            {field.value ? (format(field.value, "PPP")) : (<span>Ongoing</span>)}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                        </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                            mode="single"
-                            selected={field.value ?? undefined}
-                            onSelect={field.onChange}
-                            disabled={(date) => date > new Date()}
-                            initialFocus
-                        />
-                        </PopoverContent>
-                    </Popover>
-                     <FormDescription>Leave blank if study is ongoing.</FormDescription>
-                    <FormMessage />
-                    </FormItem>
+                  <CustomSelectDate formDescription="Leave blank if study is ongoing."  disabledPast={false} disabledFuture={true} field={field} label="End Date" />
                 )}
             />
         </div>
