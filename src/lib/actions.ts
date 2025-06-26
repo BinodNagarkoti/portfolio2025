@@ -316,3 +316,77 @@ export async function deleteExperience(id: string): Promise<{ error: string | nu
 
     return { error: null };
 }
+
+// EDUCATION ACTIONS
+export async function getEducation(): Promise<{ data: Education[] | null, error: string | null }> {
+    noStore();
+    const supabase = createSupabaseServerClient();
+    const { data, error } = await supabase
+        .from('education')
+        .select('*')
+        .order('start_date', { ascending: false });
+
+    if (error) {
+        console.error('Database Error: Failed to Fetch Education.', error);
+        return { data: null, error: error.message };
+    }
+    return { data, error: null };
+}
+
+const EducationSchema = z.object({
+    id: z.string().optional(),
+    degree: z.string().min(1, 'Degree is required'),
+    institution: z.string().min(1, 'Institution is required'),
+    location: z.string().optional(),
+    description: z.string().optional(),
+    start_date: z.string().min(1, 'Start date is required'),
+    end_date: z.string().nullable().optional(),
+});
+
+export async function upsertEducation(formData: { id?: string, [key: string]: any }): Promise<{ data: Education | null, error: string | null }> {
+    const validatedFields = EducationSchema.safeParse(formData);
+
+    if (!validatedFields.success) {
+        console.error('Form validation error:', validatedFields.error.flatten().fieldErrors);
+        return { data: null, error: 'Invalid form data.' };
+    }
+
+    const supabase = createSupabaseServerClient();
+    const { data: personalInfo } = await supabase.from('personal_info').select('id').single();
+
+    if (!personalInfo) {
+        return { data: null, error: 'Personal info not found.' };
+    }
+
+    const dataToUpsert = {
+        ...validatedFields.data,
+        personal_info_id: personalInfo.id,
+    };
+
+    const { data, error } = await supabase.from('education').upsert(dataToUpsert).select().single();
+
+    if (error) {
+        console.error('Database Upsert Error:', error);
+        return { data: null, error: error.message };
+    }
+
+    revalidatePath('/');
+    revalidatePath('/admin/dashboard/education');
+
+    return { data, error: null };
+}
+
+export async function deleteEducation(id: string): Promise<{ error: string | null }> {
+    const supabase = createSupabaseServerClient();
+    const { error } = await supabase.from('education').delete().match({ id });
+
+    if (error) {
+        console.error('Database Delete Error:', error);
+        return { error: error.message };
+    }
+
+    revalidatePath('/');
+    revalidatePath('/admin/dashboard/education');
+
+    return { error: null };
+}
