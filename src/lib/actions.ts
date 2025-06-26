@@ -3,7 +3,7 @@
 
 import { createSupabaseServerClient } from '@/lib/supabase/server'
 import { unstable_noStore as noStore, revalidatePath } from 'next/cache';
-import type { PersonalInfo, Project, SkillCategoryWithSkills, Skill, SkillCategory, Experience, Education, Post, ContactSubmission, Achievement } from './supabase-types';
+import type { PersonalInfo, Project, SkillCategoryWithSkills, Skill, SkillCategory, Experience, Education, Post, ContactSubmission, Achievement, Certification } from './supabase-types';
 import { z } from 'zod';
 
 export async function getPersonalInfo(): Promise<PersonalInfo | null> {
@@ -340,7 +340,7 @@ export async function getEducation(): Promise<{ data: Education[] | null, error:
         .order('start_date', { ascending: false });
 
     if (error) {
-        console.error('Database Error: Failed to Fetch Education.', error.message);
+        console.error('Database Error: Failed to Fetch Education.', error);
         return { data: null, error: error.message };
     }
     return { data, error: null };
@@ -636,5 +636,115 @@ export async function deleteAchievement(id: string): Promise<{ error: string | n
     revalidatePath('/');
     revalidatePath('/admin/dashboard/achievements');
 
+    return { error: null };
+}
+
+// CERTIFICATION ACTIONS
+export async function getCertifications(): Promise<{ data: Certification[] | null, error: string | null }> {
+    noStore();
+    const personalInfo = await getPersonalInfo();
+    if (!personalInfo) {
+        return { data: [], error: null };
+    }
+
+    const supabase = createSupabaseServerClient();
+    const { data, error } = await supabase
+        .from('certifications')
+        .select('*')
+        .eq('personal_info_id', personalInfo.id)
+        .order('issue_date', { ascending: false });
+
+    if (error) {
+        console.error('Database Error: Failed to Fetch Certifications.', error.message);
+        return { data: null, error: error.message };
+    }
+    return { data, error: null };
+}
+
+const CertificationSchema = z.object({
+    id: z.string().optional(),
+    name: z.string().min(1, 'Name is required'),
+    issuing_organization: z.string().min(1, 'Issuing organization is required'),
+    issue_date: z.string().nullable().optional(),
+    credential_id: z.string().optional(),
+    credential_url: z.string().url().optional().or(z.literal('')),
+    certificate_pdf_url: z.string().optional(),
+});
+
+export async function upsertCertification(formData: FormData): Promise<{ data: Certification | null, error: string | null }> {
+    const supabase = createSupabaseServerClient();
+    const personalInfo = await getPersonalInfo();
+    if (!personalInfo) {
+        return { data: null, error: 'Could not find personal info to associate certification with.' };
+    }
+
+    const rawFormData = Object.fromEntries(formData.entries());
+    const validatedFields = CertificationSchema.safeParse(rawFormData);
+    if (!validatedFields.success) {
+        console.error('Form validation error:', validatedFields.error.flatten().fieldErrors);
+        return { data: null, error: 'Invalid form data.' };
+    }
+
+    let pdfUrl = validatedFields.data.certificate_pdf_url || null;
+    const pdfFile = formData.get('certificate_pdf') as File | null;
+
+    if (pdfFile && pdfFile.size > 0) {
+        const fileName = `certs/${personalInfo.id}/${Date.now()}_${pdfFile.name}`;
+        const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('certifications') // Bucket name
+            .upload(fileName, pdfFile, { upsert: true });
+
+        if (uploadError) {
+            console.error('Storage Error:', uploadError);
+            return { data: null, error: 'Failed to upload PDF.' };
+        }
+        
+        const { data: urlData } = supabase.storage.from('certifications').getPublicUrl(uploadData.path);
+        pdfUrl = urlData.publicUrl;
+    }
+
+    const dataToUpsert = {
+        ...validatedFields.data,
+        personal_info_id: personalInfo.id,
+        certificate_pdf_url: pdfUrl,
+    };
+     if (!validatedFields.data.id) {
+        delete (dataToUpsert as {id?: string}).id;
+    }
+
+    const { data, error } = await supabase.from('certifications').upsert(dataToUpsert).select().single();
+
+    if (error) {
+        console.error('Database Upsert Error:', error);
+        return { data: null, error: error.message };
+    }
+
+    revalidatePath('/admin/dashboard/certifications');
+    return { data, error: null };
+}
+
+export async function deleteCertification(id: string): Promise<{ error: string | null }> {
+    const supabase = createSupabaseServerClient();
+    
+    // Also delete PDF from storage
+    const { data: certData, error: fetchError } = await supabase.from('certifications').select('certificate_pdf_url').eq('id', id).single();
+    if (fetchError) {
+        console.error('Could not fetch certification to delete PDF:', fetchError);
+    }
+    if (certData?.certificate_pdf_url) {
+        const path = new URL(certData.certificate_pdf_url).pathname.split('/certifications/').pop();
+        if (path) {
+            await supabase.storage.from('certifications').remove([path]);
+        }
+    }
+
+    const { error } = await supabase.from('certifications').delete().match({ id });
+
+    if (error) {
+        console.error('Database Delete Error:', error);
+        return { error: error.message };
+    }
+
+    revalidatePath('/admin/dashboard/certifications');
     return { error: null };
 }
