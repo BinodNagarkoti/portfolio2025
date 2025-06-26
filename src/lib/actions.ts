@@ -3,7 +3,7 @@
 
 import { createSupabaseServerClient } from '@/lib/supabase/server'
 import { unstable_noStore as noStore, revalidatePath } from 'next/cache';
-import type { PersonalInfo, Project, SkillCategoryWithSkills, Skill, SkillCategory, Experience, Education, Post, ContactSubmission } from './supabase-types';
+import type { PersonalInfo, Project, SkillCategoryWithSkills, Skill, SkillCategory, Experience, Education, Post, ContactSubmission, Achievement } from './supabase-types';
 import { z } from 'zod';
 
 export async function getPersonalInfo(): Promise<PersonalInfo | null> {
@@ -559,5 +559,82 @@ export async function deleteContactSubmission(id: string): Promise<{ error: stri
         return { error: error.message };
     }
     revalidatePath('/admin/dashboard/contact-submissions');
+    return { error: null };
+}
+
+// ACHIEVEMENT ACTIONS
+export async function getAchievements(): Promise<{ data: Achievement[] | null, error: string | null }> {
+    noStore();
+    const personalInfo = await getPersonalInfo();
+    if (!personalInfo) {
+      return { data: [], error: null };
+    }
+
+    const supabase = createSupabaseServerClient();
+    const { data, error } = await supabase
+        .from('achievements')
+        .select('*')
+        .eq('personal_info_id', personalInfo.id)
+        .order('date_achieved', { ascending: false });
+
+    if (error) {
+        console.error('Database Error: Failed to Fetch Achievements.', error.message);
+        return { data: null, error: error.message };
+    }
+    return { data, error: null };
+}
+
+const AchievementSchema = z.object({
+    id: z.string().optional(),
+    title: z.string().min(1, 'Title is required'),
+    description: z.string().optional(),
+    date_achieved: z.string().nullable().optional(),
+});
+
+export async function upsertAchievement(formData: { id?: string, [key: string]: any }): Promise<{ data: Achievement | null, error: string | null }> {
+    const validatedFields = AchievementSchema.safeParse(formData);
+
+    if (!validatedFields.success) {
+        console.error('Form validation error:', validatedFields.error.flatten().fieldErrors);
+        return { data: null, error: 'Invalid form data.' };
+    }
+
+    const supabase = createSupabaseServerClient();
+    const { data: personalInfo } = await supabase.from('personal_info').select('id').single();
+
+    if (!personalInfo) {
+        return { data: null, error: 'Personal info not found.' };
+    }
+
+    const dataToUpsert = {
+        ...validatedFields.data,
+        personal_info_id: personalInfo.id,
+    };
+
+    const { data, error } = await supabase.from('achievements').upsert(dataToUpsert).select().single();
+
+    if (error) {
+        console.error('Database Upsert Error:', error);
+        return { data: null, error: error.message };
+    }
+
+    revalidatePath('/');
+    revalidatePath('/admin/dashboard/achievements');
+
+    return { data, error: null };
+}
+
+export async function deleteAchievement(id: string): Promise<{ error: string | null }> {
+    const supabase = createSupabaseServerClient();
+    const { error } = await supabase.from('achievements').delete().match({ id });
+
+    if (error) {
+        console.error('Database Delete Error:', error);
+        return { error: error.message };
+    }
+
+    revalidatePath('/');
+    revalidatePath('/admin/dashboard/achievements');
+
     return { error: null };
 }

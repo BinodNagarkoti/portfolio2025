@@ -7,6 +7,7 @@ import ExperienceSection from '@/components/sections/ExperienceSection';
 import EducationSection from '@/components/sections/EducationSection';
 import ContactSection from '@/components/sections/ContactSection';
 import BlogSection from '@/components/sections/BlogSection';
+import AchievementsSection from '@/components/sections/AchievementsSection';
 import { getPersonalInfo } from '@/lib/actions';
 import { staticPersonalInfo } from '@/lib/data';
 
@@ -21,6 +22,7 @@ export default async function Home() {
       <ExperienceSection />
       <EducationSection />
       <ProjectsSection />
+      <AchievementsSection />
       <BlogSection />
       <ContactSection personalInfo={info} />
     </>

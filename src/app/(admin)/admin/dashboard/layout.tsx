@@ -29,6 +29,8 @@ import {
   LogOutIcon,
   CodeXmlIcon,
   PenSquareIcon,
+  AwardIcon,
+  StarIcon,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -46,8 +48,8 @@ const navItems = [
       { href: '/admin/dashboard/skills', label: 'Skills', icon: WrenchIcon },
       { href: '/admin/dashboard/projects', label: 'Projects', icon: FolderKanbanIcon },
       { href: '/admin/dashboard/blog', label: 'Blog', icon: PenSquareIcon },
-      { href: '/admin/dashboard/achievements', label: 'Achievements', icon: UserIcon }, // Placeholder icon
-      { href: '/admin/dashboard/certifications', label: 'Certifications', icon: UserIcon }, // Placeholder icon
+      { href: '/admin/dashboard/achievements', label: 'Achievements', icon: AwardIcon }, 
+      { href: '/admin/dashboard/certifications', label: 'Certifications', icon: StarIcon },
     ],
   },
   {
