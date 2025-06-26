@@ -3,7 +3,7 @@
 
 import { createSupabaseServerClient } from '@/lib/supabase/server'
 import { unstable_noStore as noStore, revalidatePath } from 'next/cache';
-import type { PersonalInfo, Project, SkillCategoryWithSkills, Skill, SkillCategory } from './supabase-types';
+import type { PersonalInfo, Project, SkillCategoryWithSkills, Skill, SkillCategory, Experience, Education } from './supabase-types';
 import { z } from 'zod';
 
 export async function getPersonalInfo(): Promise<PersonalInfo | null> {
@@ -240,5 +240,79 @@ export async function deleteSkill(id: string): Promise<{ error: string | null }>
     if (error) return { error: error.message };
     revalidatePath('/admin/dashboard/skills');
     revalidatePath('/');
+    return { error: null };
+}
+
+// EXPERIENCE ACTIONS
+export async function getExperience(): Promise<{ data: Experience[] | null, error: string | null }> {
+    noStore();
+    const supabase = createSupabaseServerClient();
+    const { data, error } = await supabase
+        .from('experience')
+        .select('*')
+        .order('start_date', { ascending: false });
+
+    if (error) {
+        console.error('Database Error: Failed to Fetch Experience.', error);
+        return { data: null, error: error.message };
+    }
+    return { data, error: null };
+}
+
+const ExperienceSchema = z.object({
+    id: z.string().optional(),
+    job_title: z.string().min(1, 'Job title is required'),
+    company: z.string().min(1, 'Company is required'),
+    location: z.string().optional(),
+    description: z.string().optional(),
+    start_date: z.string().min(1, 'Start date is required'),
+    end_date: z.string().nullable().optional(),
+});
+
+export async function upsertExperience(formData: { id?: string, [key: string]: any }): Promise<{ data: Experience | null, error: string | null }> {
+    const validatedFields = ExperienceSchema.safeParse(formData);
+
+    if (!validatedFields.success) {
+        console.error('Form validation error:', validatedFields.error.flatten().fieldErrors);
+        return { data: null, error: 'Invalid form data.' };
+    }
+
+    const supabase = createSupabaseServerClient();
+    const { data: personalInfo } = await supabase.from('personal_info').select('id').single();
+
+    if (!personalInfo) {
+        return { data: null, error: 'Personal info not found.' };
+    }
+
+    const dataToUpsert = {
+        ...validatedFields.data,
+        personal_info_id: personalInfo.id,
+    };
+    
+    const { data, error } = await supabase.from('experience').upsert(dataToUpsert).select().single();
+
+    if (error) {
+        console.error('Database Upsert Error:', error);
+        return { data: null, error: error.message };
+    }
+
+    revalidatePath('/');
+    revalidatePath('/admin/dashboard/experience');
+
+    return { data, error: null };
+}
+
+export async function deleteExperience(id: string): Promise<{ error: string | null }> {
+    const supabase = createSupabaseServerClient();
+    const { error } = await supabase.from('experience').delete().match({ id });
+
+    if (error) {
+        console.error('Database Delete Error:', error);
+        return { error: error.message };
+    }
+
+    revalidatePath('/');
+    revalidatePath('/admin/dashboard/experience');
+
     return { error: null };
 }

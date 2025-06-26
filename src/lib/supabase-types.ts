@@ -23,11 +23,12 @@ export interface PersonalInfo {
 
 export interface Education {
   id: string;
-  personal_info_id: string; // Foreign key to personal_info table
+  personal_info_id: string;
   degree: string;
   institution: string;
-  start_year?: number | null;
-  end_year?: number | null;
+  location?: string | null;
+  start_date?: string | null;
+  end_date?: string | null;
   description?: string | null;
   created_at?: string;
   updated_at?: string;
@@ -35,13 +36,13 @@ export interface Education {
 
 export interface Experience {
   id: string;
-  personal_info_id: string; // Foreign key to personal_info table
+  personal_info_id: string;
   job_title: string;
   company: string;
-  start_date?: string | null; // Date string
-  end_date?: string | null; // Date string, or null if current
+  location?: string | null;
+  start_date?: string | null;
+  end_date?: string | null;
   description?: string | null;
-  responsibilities?: string[] | null; // Array of text
   created_at?: string;
   updated_at?: string;
 }
