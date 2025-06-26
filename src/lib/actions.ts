@@ -3,7 +3,7 @@
 
 import { createSupabaseServerClient } from '@/lib/supabase/server'
 import { unstable_noStore as noStore, revalidatePath } from 'next/cache';
-import type { PersonalInfo, Project, SkillCategoryWithSkills, Skill, SkillCategory, Experience, Education } from './supabase-types';
+import type { PersonalInfo, Project, SkillCategoryWithSkills, Skill, SkillCategory, Experience, Education, Post } from './supabase-types';
 import { z } from 'zod';
 
 export async function getPersonalInfo(): Promise<PersonalInfo | null> {
@@ -215,7 +215,7 @@ export async function deleteSkillCategory(id: string): Promise<{ error: string |
 
 const SkillSchema = z.object({
     id: z.string().optional(),
-    name: z.string().min(1, 'Name is required'),
+    name: z.string().min(1, 'Skill name is required'),
     level: z.string().nullable(),
     skill_category_id: z.string(),
 });
@@ -340,7 +340,7 @@ export async function getEducation(): Promise<{ data: Education[] | null, error:
         .order('start_date', { ascending: false });
 
     if (error) {
-        console.error('Database Error: Failed to Fetch Education.', error);
+        console.error('Database Error: Failed to Fetch Education.', error.message);
         return { data: null, error: error.message };
     }
     return { data, error: null };
@@ -400,6 +400,89 @@ export async function deleteEducation(id: string): Promise<{ error: string | nul
 
     revalidatePath('/');
     revalidatePath('/admin/dashboard/education');
+
+    return { error: null };
+}
+
+// POSTS (BLOG) ACTIONS
+export async function getPosts(): Promise<{ data: Post[] | null, error: string | null }> {
+    noStore();
+    const personalInfo = await getPersonalInfo();
+    if (!personalInfo) {
+        return { data: [], error: null };
+    }
+
+    const supabase = createSupabaseServerClient();
+    const { data, error } = await supabase
+        .from('posts')
+        .select('*')
+        .eq('personal_info_id', personalInfo.id)
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        console.error('Database Error: Failed to Fetch Posts.', error.message);
+        return { data: null, error: error.message };
+    }
+    return { data, error: null };
+}
+
+const PostSchema = z.object({
+    id: z.string().optional(),
+    title: z.string().min(1, 'Title is required'),
+    content: z.string().min(1, 'Content is required'),
+    tags: z.string().optional(),
+});
+
+export async function upsertPost(formData: { id?: string, [key: string]: any }): Promise<{ data: Post | null, error: string | null }> {
+    const validatedFields = PostSchema.safeParse(formData);
+
+    if (!validatedFields.success) {
+        console.error('Form validation error:', validatedFields.error.flatten().fieldErrors);
+        return { data: null, error: 'Invalid form data.' };
+    }
+
+    const supabase = createSupabaseServerClient();
+    const personalInfo = await getPersonalInfo();
+
+    if (!personalInfo) {
+        return { data: null, error: 'Personal info not found.' };
+    }
+    
+    const stringToArray = (str: string | undefined) => str ? str.split(',').map(item => item.trim()).filter(Boolean) : [];
+    const snippet = validatedFields.data.content.substring(0, 150) + (validatedFields.data.content.length > 150 ? '...' : '');
+
+    const dataToUpsert = {
+        ...validatedFields.data,
+        personal_info_id: personalInfo.id,
+        tags: stringToArray(validatedFields.data.tags),
+        snippet,
+        published_at: new Date().toISOString(), // Or handle publishing state separately
+    };
+    
+    const { data, error } = await supabase.from('posts').upsert(dataToUpsert).select().single();
+
+    if (error) {
+        console.error('Database Upsert Error:', error);
+        return { data: null, error: error.message };
+    }
+
+    revalidatePath('/');
+    revalidatePath('/admin/dashboard/blog');
+
+    return { data, error: null };
+}
+
+export async function deletePost(id: string): Promise<{ error: string | null }> {
+    const supabase = createSupabaseServerClient();
+    const { error } = await supabase.from('posts').delete().match({ id });
+
+    if (error) {
+        console.error('Database Delete Error:', error);
+        return { error: error.message };
+    }
+
+    revalidatePath('/');
+    revalidatePath('/admin/dashboard/blog');
 
     return { error: null };
 }

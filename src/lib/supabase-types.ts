@@ -109,6 +109,18 @@ export interface Project {
   updated_at: string;
 }
 
+export interface Post {
+    id: string;
+    personal_info_id: string;
+    title: string;
+    content: string;
+    snippet?: string | null;
+    tags: string[] | null;
+    published_at?: string | null;
+    created_at: string;
+    updated_at: string;
+}
+
 export interface ContactSubmission {
   id: string;
   name: string;
