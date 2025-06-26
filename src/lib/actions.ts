@@ -517,3 +517,47 @@ export async function submitContactForm(formData: { name: string, email: string,
 
     return { data, error: null };
 }
+
+export async function getContactSubmissions(): Promise<{ data: ContactSubmission[] | null, error: string | null }> {
+    noStore();
+    const supabase = createSupabaseServerClient();
+    const { data, error } = await supabase
+        .from('contact_submissions')
+        .select('*')
+        .order('submitted_at', { ascending: false });
+
+    if (error) {
+        console.error('Database Error: Failed to Fetch Contact Submissions.', error.message);
+        return { data: null, error: error.message };
+    }
+    return { data, error: null };
+}
+
+export async function updateContactSubmissionReadStatus(id: string, is_read: boolean): Promise<{ data: ContactSubmission | null, error: string | null }> {
+    const supabase = createSupabaseServerClient();
+    const { data, error } = await supabase
+        .from('contact_submissions')
+        .update({ is_read })
+        .eq('id', id)
+        .select()
+        .single();
+
+    if (error) {
+        console.error('Database Update Error:', error);
+        return { data: null, error: error.message };
+    }
+    revalidatePath('/admin/dashboard/contact-submissions');
+    return { data, error: null };
+}
+
+export async function deleteContactSubmission(id: string): Promise<{ error: string | null }> {
+    const supabase = createSupabaseServerClient();
+    const { error } = await supabase.from('contact_submissions').delete().match({ id });
+
+    if (error) {
+        console.error('Database Delete Error:', error);
+        return { error: error.message };
+    }
+    revalidatePath('/admin/dashboard/contact-submissions');
+    return { error: null };
+}
