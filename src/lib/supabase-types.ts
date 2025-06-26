@@ -126,7 +126,8 @@ export interface ContactSubmission {
   name: string;
   email: string;
   message: string;
-  submitted_at?: string; // Timestamp with timezone
+  is_read: boolean;
+  submitted_at: string; // Timestamp with timezone
 }
 
 // You might also want a table for generic site settings if needed

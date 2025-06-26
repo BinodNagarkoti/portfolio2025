@@ -3,7 +3,7 @@
 
 import { createSupabaseServerClient } from '@/lib/supabase/server'
 import { unstable_noStore as noStore, revalidatePath } from 'next/cache';
-import type { PersonalInfo, Project, SkillCategoryWithSkills, Skill, SkillCategory, Experience, Education, Post } from './supabase-types';
+import type { PersonalInfo, Project, SkillCategoryWithSkills, Skill, SkillCategory, Experience, Education, Post, ContactSubmission } from './supabase-types';
 import { z } from 'zod';
 
 export async function getPersonalInfo(): Promise<PersonalInfo | null> {
@@ -185,7 +185,7 @@ export async function getSkillCategoriesWithSkills(): Promise<{ data: SkillCateg
 
 const SkillCategorySchema = z.object({
     id: z.string().optional(),
-    name: z.string().min(1, 'Name is required'),
+    name: z.string().min(1, 'Category name is required'),
 });
 
 export async function upsertSkillCategory(categoryData: { id?: string, name: string }): Promise<{ data: SkillCategory | null, error: string | null }> {
@@ -485,4 +485,35 @@ export async function deletePost(id: string): Promise<{ error: string | null }> 
     revalidatePath('/admin/dashboard/blog');
 
     return { error: null };
+}
+
+
+// CONTACT SUBMISSION ACTIONS
+const ContactFormSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  email: z.string().email('Invalid email'),
+  message: z.string().min(1, 'Message is required'),
+});
+
+export async function submitContactForm(formData: { name: string, email: string, message: string }): Promise<{ data: ContactSubmission | null, error: string | null }> {
+    const validatedFields = ContactFormSchema.safeParse(formData);
+    if (!validatedFields.success) {
+      return { data: null, error: 'Invalid form data.' };
+    }
+
+    const supabase = createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from('contact_submissions')
+      .insert({ ...validatedFields.data })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Database Insert Error:', error);
+      return { data: null, error: 'There was a problem submitting your message. Please try again.' };
+    }
+
+    revalidatePath('/admin/dashboard/contact-submissions');
+
+    return { data, error: null };
 }
