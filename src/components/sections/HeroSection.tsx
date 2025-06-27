@@ -36,7 +36,7 @@ const HeroSection = ({ personalInfo }: { personalInfo: PersonalInfo }) => {
                 </Link>
               </Button>
                <Button variant="outline" size="lg" asChild>
-                  <Link href={personalInfo.cv_url || '#'} target="_blank">
+                  <Link href={'/binod_nagarkoti.pdf'} target="_blank">
                     Download CV
                   </Link>
                 </Button>

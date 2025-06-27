@@ -474,7 +474,7 @@ const PostSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   content: z.string().min(1, 'Content is required'),
   tags: z.string().optional(),
-  published: z.boolean().default(false),
+  published_at: z.date().optional(),
 });
 
 export async function upsertPost(formData: { id?: string, [key: string]: any }): Promise<{ data: Post | null, error: string | null }> {

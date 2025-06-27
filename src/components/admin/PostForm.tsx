@@ -17,12 +17,14 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { CustomSelectDate } from '../common/FormItem/CustomSelectDate';
+import { render } from 'react-dom';
 
 const formSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   content: z.string().min(1, 'Content is required'),
   tags: z.string().optional(),
-  published: z.boolean().default(false),
+  published_at: z.date().optional(),
 });
 
 type PostFormValues = z.infer<typeof formSchema>;
@@ -40,7 +42,7 @@ export function PostForm({ post, onSuccess }: PostFormProps) {
     title: post?.title || '',
     content: post?.content || '',
     tags: post?.tags?.join(', ') || '',
-    published: post?.published || false,
+    published_at: post?.published_at ? new Date(post.published_at) : undefined,
   };
 
   const form = useForm<PostFormValues>({
@@ -112,6 +114,7 @@ export function PostForm({ post, onSuccess }: PostFormProps) {
                   </div>
                 </TabsContent>
               </Tabs>
+              <FormDescription>Dont know how to use markdown? Check out <a href="https://www.markdownguide.org/">Markdown Guide</a>.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -132,24 +135,25 @@ export function PostForm({ post, onSuccess }: PostFormProps) {
 
         <FormField
           control={form.control}
-          name="published"
+          name="published_at"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <div className="space-y-1 leading-none">
-                <FormLabel>
-                  Publish Post
-                </FormLabel>
-                <FormDescription>
-                  Make this post visible on your public portfolio.
-                </FormDescription>
-              </div>
-            </FormItem>
+            <CustomSelectDate disabledPast={false} disabledFuture={true} field={field} label="Published Date" />
+            // <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+            //   <FormControl>
+            //     <Checkbox
+            //       checked={field.value}
+            //       onCheckedChange={field.onChange}
+            //     />
+            //   </FormControl>
+            //   <div className="space-y-1 leading-none">
+            //     <FormLabel>
+            //       Publish Post
+            //     </FormLabel>
+            //     <FormDescription>
+            //       Make this post visible on your public portfolio.
+            //     </FormDescription>
+            //   </div>
+            // </FormItem>
           )}
         />
 

@@ -113,20 +113,20 @@ export default function BlogAdminPage() {
                 <TableRow key={post.id}>
                   <TableCell className="font-medium">{post.title}</TableCell>
                    <TableCell>
-                    <Badge variant={post.published ? 'default' : 'outline'}>
-                        {post.published ? (
+                    <Badge variant={post.published_at ? 'default' : 'outline'}>
+                        {post.published_at ? (
                             <GlobeIcon className="mr-1 h-3 w-3" />
                         ) : (
                              <EyeOffIcon className="mr-1 h-3 w-3" />
                         )}
-                      {post.published ? 'Published' : 'Draft'}
+                      {post.published_at ? 'Published' : 'Draft'}
                     </Badge>
                   </TableCell>
                   <TableCell>
                     {format(parseISO(post.created_at), 'PPP')}
                   </TableCell>
                   <TableCell className="text-right">
-                    {post.published && (
+                    {post.published_at && (
                       <Button variant="ghost" size="icon" asChild>
                         <Link href={`/blog/${post.slug}`} target="_blank" title="View live post">
                           <GlobeIcon className="h-4 w-4" />
