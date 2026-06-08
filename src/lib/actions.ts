@@ -435,7 +435,7 @@ export async function getPosts(options: { publishedOnly?: boolean; admin?: boole
     let query = supabase.from('posts').select('*');
 
     if (publishedOnly) {
-        query = query.eq('published', true);
+        query = query.not('published_at', 'is', null);
     }
     
     // In a multi-user CMS, you'd filter by personal_info_id here
@@ -457,7 +457,7 @@ export async function getPostBySlug(slug: string): Promise<{ data: Post | null, 
         .from('posts')
         .select('*')
         .eq('slug', slug)
-        .eq('published', true)
+        .not('published_at', 'is', null)
         .single();
     
     if (error) {
