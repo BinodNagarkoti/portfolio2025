@@ -1,35 +1,45 @@
 
 import { notFound } from 'next/navigation';
-import { getPostBySlug } from '@/lib/actions';
+import { getPersonalInfo, getPostBySlug } from '@/lib/actions';
 import SectionWrapper from '@/components/common/SectionWrapper';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import JsonLd from '@/components/seo/JsonLd';
+import { Card, CardContent, CardHeader, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { format, parseISO } from 'date-fns';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { Metadata } from 'next';
+import { staticPersonalInfo } from '@/lib/data';
+import { buildBlogPostMetadata, buildBlogPostingJsonLd } from '@/lib/seo';
 
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { data: post } = await getPostBySlug(params.slug);
+  const { slug } = await params;
+  const [{ data: post }, personalInfo] = await Promise.all([
+    getPostBySlug(slug),
+    getPersonalInfo(),
+  ]);
 
   if (!post) {
     return {
       title: 'Post Not Found',
+      robots: { index: false, follow: false },
     };
   }
 
-  return {
-    title: `${post.title} | Blog`,
-    description: post.snippet,
-  };
+  return buildBlogPostMetadata(post, personalInfo ?? staticPersonalInfo);
 }
 
 export default async function BlogPostPage({ params }: Props) {
-  const { data: post } = await getPostBySlug(params.slug);
+  const { slug } = await params;
+  const [{ data: post }, personalInfo] = await Promise.all([
+    getPostBySlug(slug),
+    getPersonalInfo(),
+  ]);
+  const info = personalInfo ?? staticPersonalInfo;
 
   if (!post) {
     notFound();
@@ -37,10 +47,11 @@ export default async function BlogPostPage({ params }: Props) {
 
   return (
     <SectionWrapper>
+      <JsonLd data={buildBlogPostingJsonLd(post, info)} />
       <div className="max-w-4xl mx-auto pt-16">
         <Card className="bg-card/50 backdrop-blur-sm">
           <CardHeader className="text-center border-b pb-6">
-            <CardTitle className="text-4xl md:text-5xl font-bold font-headline">{post.title}</CardTitle>
+            <h1 className="text-4xl md:text-5xl font-bold font-headline">{post.title}</h1>
             <CardDescription className="pt-2">
               Posted on {format(parseISO(post.created_at), 'PPP')}
             </CardDescription>

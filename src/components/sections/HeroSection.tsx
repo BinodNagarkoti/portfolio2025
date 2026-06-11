@@ -18,9 +18,9 @@ const HeroSection = ({ personalInfo }: { personalInfo: PersonalInfo }) => {
             <div className='space-y-4' >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary animate-in fade-in slide-in-from-bottom-4 duration-700"><span className="inline-block w-2 h-2 rounded-full bg-primary animate-pulse"></span><span className="text-sm font-medium">Hi，Iam</span></div>
             
-            <div className="text-5xl sm:text-6xl lg:text-7xl font-bold">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold">
               <ShinyText text={personalInfo.name} disabled={false} speed={3} />
-              </div>
+            </h1>
             <p className="text-2xl sm:text-3xl lg:text-4xl text-muted-foreground font-medium animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
               {personalInfo.title}
             </p>

@@ -3,6 +3,14 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Binodfolio Admin',
   description: 'Admin panel for Binodfolio.',
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: {
+      index: false,
+      follow: false,
+    },
+  },
 };
 
 export default function AdminRouteGroupLayout({
@@ -10,7 +18,5 @@ export default function AdminRouteGroupLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // This layout is the root for the (admin) route group.
-  // It provides a clean slate, separate from the public layout.
   return <>{children}</>;
 }

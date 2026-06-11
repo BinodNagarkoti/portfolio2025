@@ -1,0 +1,16 @@
+# Binod Nagarkoti — Full Stack Developer Portfolio
+
+> Frontend & full stack developer portfolio with projects, experience, blog posts, and contact info.
+
+## Main pages
+- [Home](/): Portfolio overview — skills, projects, experience, education, achievements, blog preview, contact
+- [Blog posts](/blog): Individual articles at `/blog/{slug}`
+
+## Contact
+- Email: binod1365@gmail.com
+- GitHub: https://github.com/BinodNagarkoti
+- LinkedIn: https://linkedin.com/in/binod-nagarkoti-496245128
+
+## Topics
+- React, Next.js, TypeScript, full stack web development
+- Portfolio projects and professional experience
